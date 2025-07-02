@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "F1",
   "resources": {
-    "hash": "sha256-sksk+N/K66G7GyrS4ouJG3tQkTQqCsaeZYaSxBLzSaY=",
+    "hash": "sha256-khncn87MQ3bdQHH+zvFczHFacKD1fw/S1gmJUpg6Yzk=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.wo66omtbzq.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.etrsxodn34.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -43,9 +43,9 @@
       "System.Text.Json.buuwn5du81.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.dfdqxrnhgx.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.fzdeucyj8o.wasm": "System.Private.CoreLib.wasm",
-      "F1.swsta7g7q5.wasm": "F1.wasm",
+      "F1.u0paay5y1z.wasm": "F1.wasm",
       "dotnet.native.zq6j9x6560.js": "dotnet.native.js",
-      "dotnet.native.ar5hspmzyy.wasm": "dotnet.native.wasm",
+      "dotnet.native.y4dmbzv3dt.wasm": "dotnet.native.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.runtime.d1pzlaz2ez.js": "dotnet.runtime.js"
     },
@@ -56,7 +56,7 @@
       "dotnet.runtime.d1pzlaz2ez.js": "sha256-gbZjXNFbH7V8lcix+H0TUDJHLeFUA3n3IMu7fLh4D80="
     },
     "wasmNative": {
-      "dotnet.native.ar5hspmzyy.wasm": "sha256-mgj0ovgFYHendFQEsepQswLon9/AA1kV9o3G+/hLRkg="
+      "dotnet.native.y4dmbzv3dt.wasm": "sha256-AvO84tTRXU1xS6c/qxhjmeoeOFM7NT+E6P1kBSStnSY="
     },
     "coreAssembly": {
       "Microsoft.AspNetCore.Components.wo66omtbzq.wasm": "sha256-oNhNQq1dH0zuV40s67+YcmIseY/gZGkjOldtSw5TQq8=",
@@ -99,7 +99,7 @@
       "System.Text.Json.buuwn5du81.wasm": "sha256-3aCaxX0Sc0PWyH/cR/QcnLF71CWl28VLnrzS4CRuznU=",
       "System.Text.RegularExpressions.dfdqxrnhgx.wasm": "sha256-h3x/8fF0sGu/UcWdlmMPaT/HKhepRA8+A/VKWJr0ZVE=",
       "System.Private.CoreLib.fzdeucyj8o.wasm": "sha256-S6wxgmluhT94CO6EnMq/M/a1q135LGgiMuD2a5eSuhk=",
-      "F1.swsta7g7q5.wasm": "sha256-ZELdQr3hLjvqVZ0XAkUXEgw8vHE2NLHg2uOHKfCS8I8="
+      "F1.u0paay5y1z.wasm": "sha256-Ln9eBG5nwBYWFoPJMR8kFO4vdnjjuQlVg3sD7EK18U4="
     },
     "assembly": {}
   },
