@@ -25,7 +25,7 @@
             {
                 <tr style="@(@race.Round == nextRound ? "color:var(--mud-palette-dark);background-color:var(--mud-palette-primary);" : string.Empty)">
                     <td style="text-align:center">@race.Round</td>
-                    <td style="text-align:center">@race.Date.ToString("yyyy-MM-dd") @race.TimeOnly?.ToString("HH:mm")</td>
+                    <td style="text-align:center">@(race.TimeOnly.HasValue ? new DateTime(race.Date, race.TimeOnly.Value).ToLocalTime().ToString("yyyy-MM-dd HH:mm") : race.Date.ToDateTime(TimeOnly.MinValue).ToLocalTime().ToString("yyyy-MM-dd"))</td>
                     <td style="text-align:center">@race.RaceName</td>
                     <td style="text-align:center">@race.Circuit.CircuitName, @race.Circuit.Location.Locality, @race.Circuit.Location.Country</td>
                 </tr>
