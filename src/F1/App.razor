@@ -1,0 +1,13 @@
+﻿@inject NavigationManager NavigationManager
+
+<Router AppAssembly="typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        @{
+            NavigationManager.NavigateTo("calendar");
+        }
+    </NotFound>
+</Router>

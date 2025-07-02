@@ -1,0 +1,68 @@
+﻿@page "/drivers"
+@using F1.Services
+
+<PageTitle>Driver's Standings</PageTitle>
+
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">Driver's Standings @year</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
+
+@if (driverStandingsTableResponse is not null)
+{
+    <MudSimpleTable Class="mud-table" Dense Hover FixedHeader>
+        <thead>
+            <tr>
+                <th style="text-align:center">Position</th>
+                <th style="text-align:center">Name</th>
+                <th style="text-align:center">Code</th>
+                <th style="text-align:center">Nationality</th>
+                <th style="text-align:center">Constructor</th>
+                <th style="text-align:center">Wins</th>
+                <th style="text-align:center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driverStanding in driverStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.DriverStandings ?? [])
+            {
+                <tr>
+                    <td style="text-align:center">@driverStanding.PositionText</td>
+                    <td style="text-align:center">@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</td>
+                    <td style="text-align:center">@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
+                    <td style="text-align:center">@driverStanding.Driver.Nationality</td>
+                    <td style="text-align:center">@driverStanding.Constructors.FirstOrDefault()?.Name</td>
+                    <td style="text-align:center">@driverStanding.Wins</td>
+                    <td style="text-align:center">@driverStanding.Points</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+
+@code {
+    private int year = DateTime.Now.Year;
+    private Response<StandingsTableMRData<DriverStandingsList>>? driverStandingsTableResponse;
+
+    [Inject]
+    private F1Service F1Service { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync() =>
+        await GetDataAsync();
+        
+
+    private async Task GetDataAsync() =>
+        driverStandingsTableResponse = await F1Service.GetDriverStandingsTableAsync(year);
+
+    private async Task BackAsync()
+    {
+        year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        year++;
+        await GetDataAsync();
+    }
+}

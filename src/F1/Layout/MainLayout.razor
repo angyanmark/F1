@@ -1,0 +1,77 @@
+﻿@using System.Reflection
+@using System.Runtime.InteropServices
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inherits LayoutComponentBase
+@inject IWebAssemblyHostEnvironment HostEnvironment
+
+<MudThemeProvider Theme="_theme" IsDarkMode="true" />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h5">F1</MudText>
+        <MudStack Spacing="2" Class="mx-4" Row>
+            <MudButton Href="/calendar" Color="Color.Inherit" Class="@GetActiveClass("calendar")">Calendar</MudButton>
+            <MudButton Href="/drivers" Color="Color.Inherit" Class="@GetActiveClass("drivers")">Driver's Standings</MudButton>
+            <MudButton Href="/constructors" Color="Color.Inherit" Class="@GetActiveClass("constructors")">Constructor's Standings</MudButton> 
+        </MudStack>
+        <MudSpacer />
+        <MudTooltip>
+            <ChildContent>
+                <MudIconButton Href="https://github.com/angyanmark/F1/" Target="_blank" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" />
+            </ChildContent>
+            <TooltipContent>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.inherit">@HostEnvironment.Environment</MudText>
+                    <MudText Typo="Typo.inherit">@($"v{Assembly.GetExecutingAssembly().GetName().Version?.Major}")</MudText>
+                    <MudText Typo="Typo.inherit">@RuntimeInformation.FrameworkDescription</MudText>
+                </MudStack>
+            </TooltipContent>
+        </MudTooltip>
+    </MudAppBar>
+    <MudMainContent Class="pt-20 pa-4">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pa-0">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
+
+    private MudTheme _theme = new()
+    {
+        PaletteDark = new()
+        {
+            Primary = "#7e6fff",
+            Surface = "#1e1e2d",
+            Background = "#1a1a27",
+            BackgroundGray = "#151521",
+            AppbarText = "#92929f",
+            AppbarBackground = "rgba(26,26,39,0.8)",
+            DrawerBackground = "#1a1a27",
+            ActionDefault = "#74718e",
+            ActionDisabled = "#9999994d",
+            ActionDisabledBackground = "#605f6d4d",
+            TextPrimary = "#b2b0bf",
+            TextSecondary = "#92929f",
+            TextDisabled = "#ffffff33",
+            DrawerIcon = "#92929f",
+            DrawerText = "#92929f",
+            GrayLight = "#2a2833",
+            GrayLighter = "#1e1e2d",
+            Info = "#4a86ff",
+            Success = "#3dcb6c",
+            Warning = "#ffb545",
+            Error = "#ff3f5f",
+            LinesDefault = "#33323e",
+            TableLines = "#33323e",
+            Divider = "#292838",
+            OverlayLight = "#1e1e2d80",
+        },
+    };
+
+    private string GetActiveClass(string page) =>
+        NavigationManager.Uri.Contains(page) ? "mud-chip-text mud-chip-color-primary" : string.Empty;
+}

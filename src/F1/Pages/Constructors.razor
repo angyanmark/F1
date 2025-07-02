@@ -1,0 +1,61 @@
+﻿@page "/constructors"
+@using F1.Services
+
+<PageTitle>Constructor's Standings</PageTitle>
+
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">Constructor's Standings @year</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
+
+@if (constructorStandingsTableResponse is not null)
+{
+    <MudSimpleTable Class="mud-table" Dense Hover FixedHeader>
+        <thead>
+            <tr>
+                <th style="text-align:center">Position</th>
+                <th style="text-align:center">Name</th>
+                <th style="text-align:center">Wins</th>
+                <th style="text-align:center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var constructorStandind in constructorStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
+            {
+                <tr>
+                    <td style="text-align:center">@constructorStandind.PositionText</td>
+                    <td style="text-align:center">@constructorStandind.Constructor.Name</td>
+                    <td style="text-align:center">@constructorStandind.Wins</td>
+                    <td style="text-align:center">@constructorStandind.Points</td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+
+@code {
+    private int year = DateTime.Now.Year;
+    private Response<StandingsTableMRData<ConstructorStandingsList>>? constructorStandingsTableResponse;
+
+    [Inject]
+    private F1Service F1Service { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync() =>
+        await GetDataAsync();
+
+    private async Task GetDataAsync() =>
+        constructorStandingsTableResponse = await F1Service.GetConstructorStandingsTableAsync(year);
+
+    private async Task BackAsync()
+    {
+        year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        year++;
+        await GetDataAsync();
+    }
+}
