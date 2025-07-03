@@ -1,4 +1,7 @@
-.mud-table {
-  height: calc(100vh - (64px + 48px + 8px + 16px + 16px));
+.fill-parent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
- 
