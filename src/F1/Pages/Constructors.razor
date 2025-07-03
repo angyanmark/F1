@@ -11,27 +11,29 @@
 
 @if (constructorStandingsTableResponse is not null)
 {
-    <MudSimpleTable Class="mud-table" Dense Hover FixedHeader>
-        <thead>
-            <tr>
-                <th style="text-align:center">Position</th>
-                <th style="text-align:center">Name</th>
-                <th style="text-align:center">Wins</th>
-                <th style="text-align:center">Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var constructorStandind in constructorStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
-            {
+    <div class="relative flex-1">
+        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+            <thead>
                 <tr>
-                    <td style="text-align:center">@constructorStandind.PositionText</td>
-                    <td style="text-align:center">@constructorStandind.Constructor.Name</td>
-                    <td style="text-align:center">@constructorStandind.Wins</td>
-                    <td style="text-align:center">@constructorStandind.Points</td>
+                    <th style="text-align:center">Position</th>
+                    <th style="text-align:center">Name</th>
+                    <th style="text-align:center">Wins</th>
+                    <th style="text-align:center">Points</th>
                 </tr>
-            }
-        </tbody>
-    </MudSimpleTable>
+            </thead>
+            <tbody>
+                @foreach (var constructorStandind in constructorStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
+                {
+                    <tr>
+                        <td style="text-align:center">@constructorStandind.PositionText</td>
+                        <td style="text-align:center">@constructorStandind.Constructor.Name</td>
+                        <td style="text-align:center">@constructorStandind.Wins</td>
+                        <td style="text-align:center">@constructorStandind.Points</td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </div>
 }
 
 @code {

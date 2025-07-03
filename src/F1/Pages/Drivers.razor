@@ -11,33 +11,35 @@
 
 @if (driverStandingsTableResponse is not null)
 {
-    <MudSimpleTable Class="mud-table" Dense Hover FixedHeader>
-        <thead>
-            <tr>
-                <th style="text-align:center">Position</th>
-                <th style="text-align:center">Name</th>
-                <th style="text-align:center">Code</th>
-                <th style="text-align:center">Nationality</th>
-                <th style="text-align:center">Constructor</th>
-                <th style="text-align:center">Wins</th>
-                <th style="text-align:center">Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var driverStanding in driverStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.DriverStandings ?? [])
-            {
+    <div class="relative flex-1">
+        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+            <thead>
                 <tr>
-                    <td style="text-align:center">@driverStanding.PositionText</td>
-                    <td style="text-align:center">@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</td>
-                    <td style="text-align:center">@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
-                    <td style="text-align:center">@driverStanding.Driver.Nationality</td>
-                    <td style="text-align:center">@driverStanding.Constructors.FirstOrDefault()?.Name</td>
-                    <td style="text-align:center">@driverStanding.Wins</td>
-                    <td style="text-align:center">@driverStanding.Points</td>
+                    <th style="text-align:center">Position</th>
+                    <th style="text-align:center">Name</th>
+                    <th style="text-align:center">Code</th>
+                    <th style="text-align:center">Nationality</th>
+                    <th style="text-align:center">Constructor</th>
+                    <th style="text-align:center">Wins</th>
+                    <th style="text-align:center">Points</th>
                 </tr>
-            }
-        </tbody>
-    </MudSimpleTable>
+            </thead>
+            <tbody>
+                @foreach (var driverStanding in driverStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.DriverStandings ?? [])
+                {
+                    <tr>
+                        <td style="text-align:center">@driverStanding.PositionText</td>
+                        <td style="text-align:center">@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</td>
+                        <td style="text-align:center">@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
+                        <td style="text-align:center">@driverStanding.Driver.Nationality</td>
+                        <td style="text-align:center">@driverStanding.Constructors.FirstOrDefault()?.Name</td>
+                        <td style="text-align:center">@driverStanding.Wins</td>
+                        <td style="text-align:center">@driverStanding.Points</td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </div>
 }
 
 @code {
