@@ -1,0 +1,110 @@
+﻿@page "/races/{Year:int?}"
+@using F1.Helpers
+@using F1.Services
+
+<PageTitle>Races @year</PageTitle>
+
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">Races @year</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
+
+@if (raceTableResponse is not null)
+{
+    <div class="relative flex-1">
+        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+            <thead>
+                <tr>
+                    <th style="text-align:center">Round</th>
+                    <th style="text-align:center">Date</th>
+                    <th style="text-align:center">Race</th>
+                    <th style="text-align:center">Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var race in raceTableResponse.MRData.RaceTable.Races)
+                {
+                    <tr style="@(race.Round == nextRound ? "color:var(--mud-palette-dark);background-color:var(--mud-palette-primary);" : string.Empty)">
+                        <td style="text-align:center">@race.Round</td>
+                        <td style="text-align:center">
+                            <MudTooltip>
+                                <ChildContent>
+                                    @TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)
+                                </ChildContent>
+                                <TooltipContent>
+                                    <MudStack Spacing="0">
+                                        @foreach (var session in race.Sessions.Where(s => s.Value is not null).OrderBy(s => s.Value!.Date).ThenBy(s => s.Value!.TimeOnly))
+                                        {
+                                            <MudStack Justify="Justify.SpaceBetween" Row>
+                                                <MudText Typo="Typo.body2">@session.Key</MudText>
+                                                <MudText Typo="Typo.body2">@TimeHelper.ToDisplayDate(session.Value!.Date, session.Value!.TimeOnly)</MudText>
+                                            </MudStack>
+                                        }
+                                    </MudStack>
+                                </TooltipContent>
+                            </MudTooltip>
+                        </td>
+                        
+                        @if (IsFutureRound(race))
+                        {
+                            <td style="text-align:center">@race.RaceName</td>
+                        }
+                        else
+                        {
+                            <td style="text-align:center"><MudLink Href=@($"races/{year}/{race.Round}")>@race.RaceName</MudLink></td>
+                        }
+                        <td style="text-align:center">@race.Circuit.CircuitName, @race.Circuit.Location.Locality, @race.Circuit.Location.Country</td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </div>
+}
+
+@code {
+    private Response<RaceTableMRData<RaceTable>>? raceTableResponse;
+    private int? nextRound;
+    private int year;
+
+    [Parameter]
+    public int? Year { get; set; }
+
+    [Inject]
+    private F1Service F1Service { get; init; } = default!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        year = Year ?? DateTime.Now.Year;
+        await GetDataAsync();
+    }
+
+    private async Task GetDataAsync()
+    {
+        NavigationManager.NavigateTo($"races/{year}");
+        raceTableResponse = await F1Service.GetRaceTableAsync(year);
+        nextRound = raceTableResponse.MRData.RaceTable.Races
+            .FirstOrDefault(IsFutureRound)
+            ?.Round;
+    }
+
+    private bool IsFutureRound(RaceBase race) =>
+        race.TimeOnly.HasValue
+            ? new DateTime(race.Date, race.TimeOnly.Value) >= DateTime.Now
+            : race.Date >= DateOnly.FromDateTime(DateTime.Now);
+
+    private async Task BackAsync()
+    {
+        year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        year++;
+        await GetDataAsync();
+    }
+}

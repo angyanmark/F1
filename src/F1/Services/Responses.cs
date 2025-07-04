@@ -3,7 +3,8 @@ using System.Text.Json.Serialization;
 namespace F1.Services;
 
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString)]
-[JsonSerializable(typeof(Response<RaceTableMRData>))]
+[JsonSerializable(typeof(Response<RaceTableMRData<RaceTable>>))]
+[JsonSerializable(typeof(Response<RaceTableMRData<ResultsRaceTable>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<DriverStandingsList>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<ConstructorStandingsList>>))]
 public sealed partial class ResponseJsonSerializerContext : JsonSerializerContext;
@@ -20,14 +21,14 @@ public abstract record MRData(
     int Offset,
     int Total);
 
-public sealed record RaceTableMRData(
+public sealed record RaceTableMRData<TRaceTable>(
     string Xmlns,
     string Series,
     Uri Url,
     int Limit,
     int Offset,
     int Total,
-    RaceTable RaceTable)
+    TRaceTable RaceTable)
         : MRData(
             Xmlns,
             Series,
@@ -126,9 +127,26 @@ public sealed record Constructor(
     string Name,
     string Nationality);
 
-public sealed record RaceTable(
+public record RaceTable(
     int Season,
     Race[] Races);
+
+public sealed record ResultsRaceTable(
+    int Season,
+    int Round,
+    RaceResult[] Races);
+
+public abstract record RaceBase(
+    int Season,
+    int Round,
+    Uri? Url,
+    string RaceName,
+    Circuit Circuit,
+    DateOnly Date,
+    string? Time)
+{
+    public TimeOnly? TimeOnly => Time is null ? null : System.TimeOnly.Parse(Time.TrimEnd('Z'));
+}
 
 public sealed record Race(
     int Season,
@@ -145,9 +163,72 @@ public sealed record Race(
     Session? Sprint,
     Session? SprintQualifying,
     Session? SprintShootout)
+        : RaceBase(
+            Season,
+            Round,
+            Url,
+            RaceName,
+            Circuit,
+            Date,
+            Time)
 {
-    public TimeOnly? TimeOnly => Time is null ? null : System.TimeOnly.Parse(Time.TrimEnd('Z'));
+    public Dictionary<string, Session?> Sessions => new()
+    {
+        { "Practice 1", FirstPractice },
+        { "Practice 2", SecondPractice },
+        { "Practice 3", ThirdPractice },
+        { "Sprint Qualifying", SprintQualifying },
+        { "Sprint Shootout", SprintShootout },
+        { "Sprint", Sprint },
+        { "Qualifying", Qualifying },
+        { "Race", new(Date, Time) },
+    };
 }
+
+public sealed record RaceResult(
+    int Season,
+    int Round,
+    Uri? Url,
+    string RaceName,
+    Circuit Circuit,
+    DateOnly Date,
+    string? Time,
+    Result[] Results)
+        : RaceBase(
+            Season,
+            Round,
+            Url,
+            RaceName,
+            Circuit,
+            Date,
+            Time);
+
+public sealed record Result(
+    int Number,
+    int Position,
+    string PositionText,
+    double Points,
+    Driver Driver,
+    Constructor? Constructor,
+    int? Grid,
+    int? Laps,
+    string? Status,
+    TimeObj? Time,
+    FastestLap? FastestLap);
+
+public sealed record TimeObj(
+    int? Millis,
+    string Time);
+
+public sealed record FastestLap(
+    int Rank,
+    int Lap,
+    TimeObj Time,
+    AverageSpeed AverageSpeed);
+
+public sealed record AverageSpeed(
+    string Units,
+    double Speed);
 
 public sealed record Circuit(
     string CircuitId,
@@ -163,7 +244,7 @@ public sealed record Location(
 
 public sealed record Session(
     DateOnly Date,
-    string Time)
+    string? Time)
 {
-    public TimeOnly TimeOnly => TimeOnly.Parse(Time.TrimEnd('Z'));
+    public TimeOnly? TimeOnly => Time is null ? null : System.TimeOnly.Parse(Time.TrimEnd('Z'));
 }

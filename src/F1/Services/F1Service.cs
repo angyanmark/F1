@@ -7,12 +7,22 @@ public sealed class F1Service(HttpClient _httpClient)
 {
     private const int PageSize = 100;
 
-    public async Task<Response<RaceTableMRData>> GetRaceTableAsync(
+    public async Task<Response<RaceTableMRData<RaceTable>>> GetRaceTableAsync(
         int year,
         CancellationToken cancellationToken = default) =>
             await _httpClient.GetFromJsonAsync(
                 $"/ergast/f1/{year}/?limit={PageSize}",
-                ResponseJsonSerializerContext.Default.ResponseRaceTableMRData,
+                ResponseJsonSerializerContext.Default.ResponseRaceTableMRDataRaceTable,
+                cancellationToken)
+            ?? throw new JsonException();
+    
+    public async Task<Response<RaceTableMRData<ResultsRaceTable>>> GetRaceTableResultsAsync(
+        int year,
+        int round,
+        CancellationToken cancellationToken = default) =>
+            await _httpClient.GetFromJsonAsync(
+                $"/ergast/f1/{year}/{round}/results/?limit={PageSize}",
+                ResponseJsonSerializerContext.Default.ResponseRaceTableMRDataResultsRaceTable,
                 cancellationToken)
             ?? throw new JsonException();
 

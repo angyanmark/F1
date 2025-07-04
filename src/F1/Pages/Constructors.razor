@@ -1,7 +1,7 @@
-﻿@page "/constructors"
+﻿@page "/constructors/{Year:int?}"
 @using F1.Services
 
-<PageTitle>Constructor's Standings</PageTitle>
+<PageTitle>Constructor's Standings @year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
@@ -37,17 +37,29 @@
 }
 
 @code {
-    private int year = DateTime.Now.Year;
     private Response<StandingsTableMRData<ConstructorStandingsList>>? constructorStandingsTableResponse;
+    private int year;
+
+    [Parameter]
+    public int? Year { get; set; }
 
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    protected override async Task OnInitializedAsync() =>
-        await GetDataAsync();
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
 
-    private async Task GetDataAsync() =>
+    protected override async Task OnInitializedAsync()
+    {
+        year = Year ?? DateTime.Now.Year;
+        await GetDataAsync();
+    }
+
+    private async Task GetDataAsync()
+    {
+        NavigationManager.NavigateTo($"constructors/{year}");
         constructorStandingsTableResponse = await F1Service.GetConstructorStandingsTableAsync(year);
+    }
 
     private async Task BackAsync()
     {
