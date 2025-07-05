@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th style="text-align:center">Position</th>
-                    <th style="text-align:center">Name</th>
+                    <th style="text-align:center">Driver</th>
                     <th style="text-align:center">Code</th>
                     <th style="text-align:center">Nationality</th>
                     <th style="text-align:center">Constructor</th>
@@ -29,10 +29,10 @@
                 {
                     <tr>
                         <td style="text-align:center">@driverStanding.PositionText</td>
-                        <td style="text-align:center">@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</td>
+                        <td style="text-align:center"><MudLink Href=@($"drivers/{year}/{driverStanding.Driver.DriverId}")>@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</MudLink></td>
                         <td style="text-align:center">@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
                         <td style="text-align:center">@driverStanding.Driver.Nationality</td>
-                        <td style="text-align:center">@driverStanding.Constructors.FirstOrDefault()?.Name</td>
+                        <td style="text-align:center">@driverStanding.Constructors.LastOrDefault()?.Name</td>
                         <td style="text-align:center">@driverStanding.Wins</td>
                         <td style="text-align:center">@driverStanding.Points</td>
                     </tr>

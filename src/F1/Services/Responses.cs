@@ -4,7 +4,8 @@ namespace F1.Services;
 
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString)]
 [JsonSerializable(typeof(Response<RaceTableMRData<RaceTable>>))]
-[JsonSerializable(typeof(Response<RaceTableMRData<ResultsRaceTable>>))]
+[JsonSerializable(typeof(Response<RaceTableMRData<RaceResultsRaceTable>>))]
+[JsonSerializable(typeof(Response<RaceTableMRData<DriverResultsRaceTable>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<DriverStandingsList>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<ConstructorStandingsList>>))]
 public sealed partial class ResponseJsonSerializerContext : JsonSerializerContext;
@@ -114,26 +115,31 @@ public sealed record ConstructorStanding(
 public sealed record Driver(
     string DriverId,
     int? PermanentNumber,
-    string Code,
-    Uri Url,
+    string? Code,
+    Uri? Url,
     string GivenName,
     string FamilyName,
-    DateOnly DateOfBirth,
-    string Nationality);
+    DateOnly? DateOfBirth,
+    string? Nationality);
 
 public sealed record Constructor(
-    string ConstructorId,
-    Uri Url,
+    string? ConstructorId,
+    Uri? Url,
     string Name,
-    string Nationality);
+    string? Nationality);
 
 public record RaceTable(
     int Season,
     Race[] Races);
 
-public sealed record ResultsRaceTable(
+public sealed record RaceResultsRaceTable(
     int Season,
     int Round,
+    RaceResult[] Races);
+
+public sealed record DriverResultsRaceTable(
+    int Season,
+    string DriverId,
     RaceResult[] Races);
 
 public abstract record RaceBase(
