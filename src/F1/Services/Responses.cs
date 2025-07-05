@@ -6,6 +6,7 @@ namespace F1.Services;
 [JsonSerializable(typeof(Response<RaceTableMRData<RaceTable>>))]
 [JsonSerializable(typeof(Response<RaceTableMRData<RaceResultsRaceTable>>))]
 [JsonSerializable(typeof(Response<RaceTableMRData<DriverResultsRaceTable>>))]
+[JsonSerializable(typeof(Response<RaceTableMRData<ConstructorResultsRaceTable>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<DriverStandingsList>>))]
 [JsonSerializable(typeof(Response<StandingsTableMRData<ConstructorStandingsList>>))]
 public sealed partial class ResponseJsonSerializerContext : JsonSerializerContext;
@@ -140,6 +141,11 @@ public sealed record RaceResultsRaceTable(
 public sealed record DriverResultsRaceTable(
     int Season,
     string DriverId,
+    RaceResult[] Races);
+
+public sealed record ConstructorResultsRaceTable(
+    int Season,
+    string ConstructorId,
     RaceResult[] Races);
 
 public abstract record RaceBase(

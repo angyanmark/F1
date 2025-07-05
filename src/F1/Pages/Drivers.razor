@@ -1,11 +1,11 @@
 ﻿@page "/drivers/{Year:int?}"
 @using F1.Services
 
-<PageTitle>Driver's Standings @year</PageTitle>
+<PageTitle>Drivers @year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
-    <MudText Typo="Typo.h4">Driver's Standings @year</MudText>
+    <MudText Typo="Typo.h4">Drivers @year</MudText>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
 </MudStack>
 
@@ -32,7 +32,7 @@
                         <td style="text-align:center"><MudLink Href=@($"drivers/{year}/{driverStanding.Driver.DriverId}")>@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</MudLink></td>
                         <td style="text-align:center">@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
                         <td style="text-align:center">@driverStanding.Driver.Nationality</td>
-                        <td style="text-align:center">@driverStanding.Constructors.LastOrDefault()?.Name</td>
+                        <td style="text-align:center"><MudLink Href=@($"constructors/{year}/{driverStanding.Constructors.LastOrDefault()?.ConstructorId}")>@driverStanding.Constructors.LastOrDefault()?.Name</MudLink></td>
                         <td style="text-align:center">@driverStanding.Wins</td>
                         <td style="text-align:center">@driverStanding.Points</td>
                     </tr>

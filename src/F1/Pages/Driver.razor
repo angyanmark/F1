@@ -28,9 +28,9 @@
                 {
                     <tr>
                         <td style="text-align:center">@race.Round</td>
-                        <td style="text-align:center">@race.RaceName</td>
+                        <td style="text-align:center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
                         <td style="text-align:center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
-                        <td style="text-align:center">@race.Results.FirstOrDefault()?.Constructor?.Name</td>
+                        <td style="text-align:center"><MudLink Href=@($"constructors/{Year}/{race.Results.FirstOrDefault()?.Constructor?.ConstructorId}")>@race.Results.FirstOrDefault()?.Constructor?.Name</MudLink></td>
                         <td style="text-align:center" title="@race.Results.FirstOrDefault()?.Status">@race.Results.FirstOrDefault()?.PositionText</td>
                         <td style="text-align:center">@race.Results.FirstOrDefault()?.Points</td>
                     </tr>

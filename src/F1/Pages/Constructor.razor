@@ -1,0 +1,77 @@
+﻿@page "/constructors/{Year:int}/{ConstructorId}"
+@using F1.Services
+@using F1.Helpers
+
+<PageTitle>@(constructor is null ? "Constructor" : $"{constructor.Name} {Year}")</PageTitle>
+
+@if (raceTableConstructorResultsResponse is not null)
+{
+    @if (constructor is not null)
+    {
+        <MudText Typo="Typo.h4" Class="pb-2">@constructor.Name @Year</MudText>
+    }
+
+    <div class="relative flex-1">
+        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+            <thead>
+                <tr>
+                    <th style="text-align:center">Round</th>
+                    <th style="text-align:center">Race</th>
+                    <th style="text-align:center">Date</th>
+                    <th style="text-align:center">Driver</th>
+                    <th style="text-align:center">Position</th>
+                    <th style="text-align:center">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var race in raceTableConstructorResultsResponse.MRData.RaceTable.Races ?? [])
+                {
+                    
+                    <tr>
+                        <td style="text-align:center">@race.Round</td>
+                        <td style="text-align:center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
+                        <td style="text-align:center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
+                        <td style="text-align:center">
+                            @foreach (var result in race.Results)
+                            {
+                                <MudLink Href=@($"drivers/{Year}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink><br/>
+                            }
+                        </td>
+                        <td style="text-align:center">
+                            @foreach (var result in race.Results)
+                            {
+                                <div title="@result.Status">@result.PositionText</div>
+                            }
+                        </td>
+                        <td style="text-align:center">
+                            @foreach (var result in race.Results)
+                            {
+                                @result.Points<br/>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </div>
+}
+
+@code {
+    private Response<RaceTableMRData<ConstructorResultsRaceTable>>? raceTableConstructorResultsResponse;
+    private F1.Services.Constructor? constructor;
+
+    [Parameter]
+    public required int Year { get; init; }
+
+    [Parameter]
+    public required string ConstructorId { get; init; }
+
+    [Inject]
+    private F1Service F1Service { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        raceTableConstructorResultsResponse = await F1Service.GetConstructorResultsTableAsync(Year, ConstructorId);
+        constructor = raceTableConstructorResultsResponse.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
+    }
+}

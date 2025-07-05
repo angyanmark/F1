@@ -15,7 +15,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 ResponseJsonSerializerContext.Default.ResponseRaceTableMRDataRaceTable,
                 cancellationToken)
             ?? throw new JsonException();
-    
+
     public async Task<Response<RaceTableMRData<RaceResultsRaceTable>>> GetRaceTableResultsAsync(
         int year,
         int round,
@@ -34,7 +34,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 ResponseJsonSerializerContext.Default.ResponseStandingsTableMRDataDriverStandingsList,
                 cancellationToken)
             ?? throw new JsonException();
-    
+
     public async Task<Response<RaceTableMRData<DriverResultsRaceTable>>> GetDriverResultsTableAsync(
         int year,
         string driverId,
@@ -51,6 +51,16 @@ public sealed class F1Service(HttpClient _httpClient)
             await _httpClient.GetFromJsonAsync(
                 $"/ergast/f1/{year}/constructorstandings/?limit={PageSize}",
                 ResponseJsonSerializerContext.Default.ResponseStandingsTableMRDataConstructorStandingsList,
+                cancellationToken)
+            ?? throw new JsonException();
+
+    public async Task<Response<RaceTableMRData<ConstructorResultsRaceTable>>> GetConstructorResultsTableAsync(
+        int year,
+        string constructorId,
+        CancellationToken cancellationToken = default) =>
+            await _httpClient.GetFromJsonAsync(
+                $"/ergast/f1/{year}/constructors/{constructorId}/results.json?limit={PageSize}",
+                ResponseJsonSerializerContext.Default.ResponseRaceTableMRDataConstructorResultsRaceTable,
                 cancellationToken)
             ?? throw new JsonException();
 }

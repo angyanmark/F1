@@ -33,8 +33,8 @@
                 {
                     <tr>
                         <td style="text-align:center" title="@result.Status">@result.PositionText</td>
-                        <td style="text-align:center">@result.Driver.GivenName @result.Driver.FamilyName</td>
-                        <td style="text-align:center">@result.Constructor?.Name</td>
+                        <td style="text-align:center"><MudLink Href=@($"drivers/{Year}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
+                        <td style="text-align:center"><MudLink Href=@($"constructors/{Year}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
                         <td style="text-align:center">@(result.Time is null ? result.Status : result.Laps == laps ? result.Time?.Time : laps - result.Laps is 1 ? "+1 Lap" : $"+{laps - result.Laps} Laps")</td>
                         <td style="text-align:center">@result.Points</td>
                     </tr>

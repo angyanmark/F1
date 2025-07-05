@@ -1,11 +1,11 @@
 ﻿@page "/constructors/{Year:int?}"
 @using F1.Services
 
-<PageTitle>Constructor's Standings @year</PageTitle>
+<PageTitle>Constructors @year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
-    <MudText Typo="Typo.h4">Constructor's Standings @year</MudText>
+    <MudText Typo="Typo.h4">Constructors @year</MudText>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
 </MudStack>
 
@@ -22,13 +22,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var constructorStandind in constructorStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
+                @foreach (var constructorStandings in constructorStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
                 {
                     <tr>
-                        <td style="text-align:center">@constructorStandind.PositionText</td>
-                        <td style="text-align:center">@constructorStandind.Constructor.Name</td>
-                        <td style="text-align:center">@constructorStandind.Wins</td>
-                        <td style="text-align:center">@constructorStandind.Points</td>
+                        <td style="text-align:center">@constructorStandings.PositionText</td>
+                        <td style="text-align:center"><MudLink Href=@($"constructors/{year}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
+                        <td style="text-align:center">@constructorStandings.Wins</td>
+                        <td style="text-align:center">@constructorStandings.Points</td>
                     </tr>
                 }
             </tbody>
