@@ -4,7 +4,7 @@
 
 <PageTitle>@(driver is null ? "Driver" : $"{driver.GivenName} {driver.FamilyName} {Year}")</PageTitle>
 
-@if (raceTableDriverResultsResponse is not null)
+@if (driverResultsRaceTable is not null)
 {
     @if (driver is not null)
     {
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var race in raceTableDriverResultsResponse.MRData.RaceTable.Races ?? [])
+                @foreach (var race in driverResultsRaceTable.MRData.RaceTable.Races ?? [])
                 {
                     <tr>
                         <td style="text-align:center">@race.Round</td>
@@ -41,7 +41,7 @@
 }
 
 @code {
-    private Response<RaceTableMRData<DriverResultsRaceTable>>? raceTableDriverResultsResponse;
+    private Response<RaceTableMRData<DriverResultsRaceTable>>? driverResultsRaceTable;
     private F1.Services.Driver? driver;
 
     [Parameter]
@@ -55,7 +55,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        raceTableDriverResultsResponse = await F1Service.GetDriverResultsTableAsync(Year, DriverId);
-        driver = raceTableDriverResultsResponse.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
+        driverResultsRaceTable = await F1Service.GetDriverAsync(Year, DriverId);
+        driver = driverResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
     }
 }

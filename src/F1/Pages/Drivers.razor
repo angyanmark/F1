@@ -9,7 +9,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
 </MudStack>
 
-@if (driverStandingsTableResponse is not null)
+@if (driverStandingsList is not null)
 {
     <div class="relative flex-1">
         <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var driverStanding in driverStandingsTableResponse.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.DriverStandings ?? [])
+                @foreach (var driverStanding in driverStandingsList.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.DriverStandings ?? [])
                 {
                     <tr>
                         <td style="text-align:center">@driverStanding.PositionText</td>
@@ -43,7 +43,7 @@
 }
 
 @code {
-    private Response<StandingsTableMRData<DriverStandingsList>>? driverStandingsTableResponse;
+    private Response<StandingsTableMRData<DriverStandingsList>>? driverStandingsList;
     private int year;
 
     [Parameter]
@@ -65,7 +65,7 @@
     private async Task GetDataAsync()
     {
         NavigationManager.NavigateTo($"drivers/{year}");
-        driverStandingsTableResponse = await F1Service.GetDriverStandingsTableAsync(year);
+        driverStandingsList = await F1Service.GetDriversAsync(year);
     }
 
     private async Task BackAsync()

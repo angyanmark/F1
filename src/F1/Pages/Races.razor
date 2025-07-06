@@ -10,7 +10,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
 </MudStack>
 
-@if (raceTableResponse is not null)
+@if (raceTable is not null)
 {
     <div class="relative flex-1">
         <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var race in raceTableResponse.MRData.RaceTable.Races)
+                @foreach (var race in raceTable.MRData.RaceTable.Races)
                 {
                     <tr style="@(race.Round == nextRound ? "color:var(--mud-palette-dark);background-color:var(--mud-palette-primary);" : string.Empty)">
                         <td style="text-align:center">@race.Round</td>
@@ -63,7 +63,7 @@
 }
 
 @code {
-    private Response<RaceTableMRData<RaceTable>>? raceTableResponse;
+    private Response<RaceTableMRData<RaceTable>>? raceTable;
     private int? nextRound;
     private int year;
 
@@ -85,16 +85,16 @@
     private async Task GetDataAsync()
     {
         NavigationManager.NavigateTo($"races/{year}");
-        raceTableResponse = await F1Service.GetRaceTableAsync(year);
-        nextRound = raceTableResponse.MRData.RaceTable.Races
+        raceTable = await F1Service.GetRacesAsync(year);
+        nextRound = raceTable.MRData.RaceTable.Races
             .FirstOrDefault(IsFutureRound)
             ?.Round;
     }
 
     private bool IsFutureRound(RaceBase race) =>
         race.TimeOnly.HasValue
-            ? new DateTime(race.Date, race.TimeOnly.Value) >= DateTime.Now
-            : race.Date >= DateOnly.FromDateTime(DateTime.Now);
+            ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Local) >= DateTime.Now
+            : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Local) >= DateTime.Now;
 
     private async Task BackAsync()
     {

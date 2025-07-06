@@ -7,7 +7,7 @@ public sealed class F1Service(HttpClient _httpClient)
 {
     private const int PageSize = 100;
 
-    public async Task<Response<RaceTableMRData<RaceTable>>> GetRaceTableAsync(
+    public async Task<Response<RaceTableMRData<RaceTable>>> GetRacesAsync(
         int year,
         CancellationToken cancellationToken = default) =>
             await _httpClient.GetFromJsonAsync(
@@ -16,7 +16,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 cancellationToken)
             ?? throw new JsonException();
 
-    public async Task<Response<RaceTableMRData<RaceResultsRaceTable>>> GetRaceTableResultsAsync(
+    public async Task<Response<RaceTableMRData<RaceResultsRaceTable>>> GetRaceAsync(
         int year,
         int round,
         CancellationToken cancellationToken = default) =>
@@ -26,7 +26,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 cancellationToken)
             ?? throw new JsonException();
 
-    public async Task<Response<StandingsTableMRData<DriverStandingsList>>> GetDriverStandingsTableAsync(
+    public async Task<Response<StandingsTableMRData<DriverStandingsList>>> GetDriversAsync(
         int year,
         CancellationToken cancellationToken = default) =>
             await _httpClient.GetFromJsonAsync(
@@ -35,7 +35,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 cancellationToken)
             ?? throw new JsonException();
 
-    public async Task<Response<RaceTableMRData<DriverResultsRaceTable>>> GetDriverResultsTableAsync(
+    public async Task<Response<RaceTableMRData<DriverResultsRaceTable>>> GetDriverAsync(
         int year,
         string driverId,
         CancellationToken cancellationToken = default) =>
@@ -45,7 +45,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 cancellationToken)
             ?? throw new JsonException();
 
-    public async Task<Response<StandingsTableMRData<ConstructorStandingsList>>> GetConstructorStandingsTableAsync(
+    public async Task<Response<StandingsTableMRData<ConstructorStandingsList>>> GetConstructorsAsync(
         int year,
         CancellationToken cancellationToken = default) =>
             await _httpClient.GetFromJsonAsync(
@@ -54,7 +54,7 @@ public sealed class F1Service(HttpClient _httpClient)
                 cancellationToken)
             ?? throw new JsonException();
 
-    public async Task<Response<RaceTableMRData<ConstructorResultsRaceTable>>> GetConstructorResultsTableAsync(
+    public async Task<Response<RaceTableMRData<ConstructorResultsRaceTable>>> GetConstructorAsync(
         int year,
         string constructorId,
         CancellationToken cancellationToken = default) =>

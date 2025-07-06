@@ -4,7 +4,7 @@
 
 <PageTitle>@(raceResult is null ? "Race" : $"{raceResult.RaceName} {raceResult.Season}")</PageTitle>
 
-@if (raceTableRaceResultsResponse is not null)
+@if (raceResultsRaceTable is not null)
 {
     @if (raceResult is not null)
     {
@@ -45,7 +45,7 @@
 }
 
 @code {
-    private Response<RaceTableMRData<RaceResultsRaceTable>>? raceTableRaceResultsResponse;
+    private Response<RaceTableMRData<RaceResultsRaceTable>>? raceResultsRaceTable;
     private RaceResult? raceResult;
     private int? laps;
 
@@ -60,8 +60,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        raceTableRaceResultsResponse = await F1Service.GetRaceTableResultsAsync(Year, Round);
-        raceResult = raceTableRaceResultsResponse.MRData.RaceTable.Races.FirstOrDefault();
+        raceResultsRaceTable = await F1Service.GetRaceAsync(Year, Round);
+        raceResult = raceResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault();
         laps = raceResult?.Results.FirstOrDefault()?.Laps;
     }
 }

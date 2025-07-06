@@ -1,6 +1,6 @@
 # F1
 
-A simple website for viewing Formula 1 races and standings.
+A simple website for viewing Formula 1 races, drivers and constructors.
 
 Data provided by [Jolpica F1](https://github.com/jolpica/jolpica-f1).
 

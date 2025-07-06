@@ -129,7 +129,7 @@ public sealed record Constructor(
     string Name,
     string? Nationality);
 
-public record RaceTable(
+public sealed record RaceTable(
     int Season,
     Race[] Races);
 

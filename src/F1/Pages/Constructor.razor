@@ -4,7 +4,7 @@
 
 <PageTitle>@(constructor is null ? "Constructor" : $"{constructor.Name} {Year}")</PageTitle>
 
-@if (raceTableConstructorResultsResponse is not null)
+@if (constructorResultsRaceTable is not null)
 {
     @if (constructor is not null)
     {
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var race in raceTableConstructorResultsResponse.MRData.RaceTable.Races ?? [])
+                @foreach (var race in constructorResultsRaceTable.MRData.RaceTable.Races ?? [])
                 {
                     
                     <tr>
@@ -57,7 +57,7 @@
 }
 
 @code {
-    private Response<RaceTableMRData<ConstructorResultsRaceTable>>? raceTableConstructorResultsResponse;
+    private Response<RaceTableMRData<ConstructorResultsRaceTable>>? constructorResultsRaceTable;
     private F1.Services.Constructor? constructor;
 
     [Parameter]
@@ -71,7 +71,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        raceTableConstructorResultsResponse = await F1Service.GetConstructorResultsTableAsync(Year, ConstructorId);
-        constructor = raceTableConstructorResultsResponse.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
+        constructorResultsRaceTable = await F1Service.GetConstructorAsync(Year, ConstructorId);
+        constructor = constructorResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
     }
 }
