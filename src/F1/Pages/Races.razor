@@ -93,8 +93,8 @@
 
     private bool IsFutureRound(RaceBase race) =>
         race.TimeOnly.HasValue
-            ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Local) >= DateTime.Now
-            : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Local) >= DateTime.Now;
+            ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Utc) >= DateTime.UtcNow
+            : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Utc) >= DateTime.UtcNow;
 
     private async Task BackAsync()
     {
