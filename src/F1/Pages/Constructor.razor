@@ -4,23 +4,24 @@
 
 <PageTitle>@(constructor is null ? "Constructor" : $"{constructor.Name} {Year}")</PageTitle>
 
-@if (constructorResultsRaceTable is not null)
-{
-    @if (constructor is not null)
-    {
-        <MudText Typo="Typo.h4" Class="pb-2">@constructor.Name @Year</MudText>
-    }
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">@(constructor is null ? string.Empty : $"{constructor.Name} {Year}")</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
 
-    <div class="relative flex-1">
-        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+<div class="relative flex-1">
+    <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+        @if (constructorResultsRaceTable is not null)
+        {
             <thead>
                 <tr>
-                    <th style="text-align:center">Round</th>
-                    <th style="text-align:center">Race</th>
-                    <th style="text-align:center">Date</th>
-                    <th style="text-align:center">Driver</th>
-                    <th style="text-align:center">Position</th>
-                    <th style="text-align:center">Points</th>
+                    <th class="align-center">Round</th>
+                    <th class="align-center">Race</th>
+                    <th class="align-center">Date</th>
+                    <th class="align-center">Driver</th>
+                    <th class="align-center">Position</th>
+                    <th class="align-center">Points</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,22 +29,22 @@
                 {
                     
                     <tr>
-                        <td style="text-align:center">@race.Round</td>
-                        <td style="text-align:center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
-                        <td style="text-align:center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
-                        <td style="text-align:center">
+                        <td class="align-center">@race.Round</td>
+                        <td class="align-center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
+                        <td class="align-center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
+                        <td class="align-center">
                             @foreach (var result in race.Results)
                             {
                                 <MudLink Href=@($"drivers/{Year}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink><br/>
                             }
                         </td>
-                        <td style="text-align:center">
+                        <td class="align-center">
                             @foreach (var result in race.Results)
                             {
                                 <div title="@result.Status">@result.PositionText</div>
                             }
                         </td>
-                        <td style="text-align:center">
+                        <td class="align-center">
                             @foreach (var result in race.Results)
                             {
                                 @result.Points<br/>
@@ -52,16 +53,16 @@
                     </tr>
                 }
             </tbody>
-        </MudSimpleTable>
-    </div>
-}
+        }
+    </MudSimpleTable>
+</div>
 
 @code {
     private Response<RaceTableMRData<ConstructorResultsRaceTable>>? constructorResultsRaceTable;
     private F1.Services.Constructor? constructor;
 
     [Parameter]
-    public required int Year { get; init; }
+    public required int Year { get; set; }
 
     [Parameter]
     public required string ConstructorId { get; init; }
@@ -69,9 +70,28 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync() =>
+        await GetDataAsync();
+
+    private async Task GetDataAsync()
     {
+        NavigationManager.NavigateTo($"constructors/{Year}/{ConstructorId}");
         constructorResultsRaceTable = await F1Service.GetConstructorAsync(Year, ConstructorId);
         constructor = constructorResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
+    }
+
+    private async Task BackAsync()
+    {
+        Year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        Year++;
+        await GetDataAsync();
     }
 }

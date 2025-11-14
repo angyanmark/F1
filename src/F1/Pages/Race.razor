@@ -2,47 +2,42 @@
 @using F1.Services
 @using F1.Helpers
 
-<PageTitle>@(raceResult is null ? "Race" : $"{raceResult.RaceName} {raceResult.Season}")</PageTitle>
+<PageTitle>@(raceResult is null ? "Race" : $"{raceResult.RaceName} {Year}")</PageTitle>
 
-@if (raceResultsRaceTable is not null)
-{
-    @if (raceResult is not null)
-    {
-        <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-            <MudText Typo="Typo.h4">@raceResult.RaceName @raceResult.Season</MudText>
-            <MudStack Spacing="0">
-                <MudText Align="Align.Right">Round @raceResult.Round, @TimeHelper.ToDisplayDate(raceResult.Date, raceResult.TimeOnly)</MudText>
-                <MudText Align="Align.Right">@raceResult.Circuit.CircuitName, @raceResult.Circuit.Location.Locality, @raceResult.Circuit.Location.Country</MudText>
-            </MudStack>
-        </MudStack>
-    }
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">@(raceResult is null ? string.Empty : $"{raceResult.RaceName} {Year}")</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
 
-    <div class="relative flex-1">
-        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+<div class="relative flex-1">
+    <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+        @if (raceResultsRaceTable is not null)
+        {
             <thead>
                 <tr>
-                    <th style="text-align:center">Position</th>
-                    <th style="text-align:center">Name</th>
-                    <th style="text-align:center">Constructor</th>
-                    <th style="text-align:center">Time</th>
-                    <th style="text-align:center">Points</th>
+                    <th class="align-center">Position</th>
+                    <th class="align-center">Name</th>
+                    <th class="align-center">Constructor</th>
+                    <th class="align-center">Time</th>
+                    <th class="align-center">Points</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var result in raceResult?.Results ?? [])
                 {
                     <tr>
-                        <td style="text-align:center" title="@result.Status">@result.PositionText</td>
-                        <td style="text-align:center"><MudLink Href=@($"drivers/{Year}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
-                        <td style="text-align:center"><MudLink Href=@($"constructors/{Year}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
-                        <td style="text-align:center">@(result.Time is null ? result.Status : result.Laps == laps ? result.Time?.Time : laps - result.Laps is 1 ? "+1 Lap" : $"+{laps - result.Laps} Laps")</td>
-                        <td style="text-align:center">@result.Points</td>
+                        <td class="align-center" title="@result.Status">@result.PositionText</td>
+                        <td class="align-center"><MudLink Href=@($"drivers/{Year}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
+                        <td class="align-center"><MudLink Href=@($"constructors/{Year}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
+                        <td class="align-center">@(result.Time is null ? result.Status : result.Laps == laps ? result.Time?.Time : laps - result.Laps is 1 ? "+1 Lap" : $"+{laps - result.Laps} Laps")</td>
+                        <td class="align-center">@result.Points</td>
                     </tr>
                 }
             </tbody>
-        </MudSimpleTable>
-    </div>
-}
+        }
+    </MudSimpleTable>
+</div>
 
 @code {
     private Response<RaceTableMRData<RaceResultsRaceTable>>? raceResultsRaceTable;
@@ -50,7 +45,7 @@
     private int? laps;
 
     [Parameter]
-    public required int Year { get; init; }
+    public required int Year { get; set; }
 
     [Parameter]
     public required int Round { get; init; }
@@ -58,10 +53,29 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync() =>
+        await GetDataAsync();
+
+    private async Task GetDataAsync()
     {
+        NavigationManager.NavigateTo($"races/{Year}/{Round}");
         raceResultsRaceTable = await F1Service.GetRaceAsync(Year, Round);
         raceResult = raceResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault();
         laps = raceResult?.Results.FirstOrDefault()?.Laps;
+    }
+
+    private async Task BackAsync()
+    {
+        Year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        Year++;
+        await GetDataAsync();
     }
 }

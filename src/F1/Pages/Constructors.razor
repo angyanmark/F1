@@ -1,44 +1,43 @@
 ﻿@page "/constructors/{Year:int?}"
 @using F1.Services
 
-<PageTitle>Constructors @year</PageTitle>
+<PageTitle>Constructors @Year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
-    <MudText Typo="Typo.h4">Constructors @year</MudText>
+    <MudText Typo="Typo.h4">Constructors @Year</MudText>
     <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
 </MudStack>
 
-@if (constructorStandingsList is not null)
-{
-    <div class="relative flex-1">
-        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+<div class="relative flex-1">
+    <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+        @if (constructorStandingsList is not null)
+        {
             <thead>
                 <tr>
-                    <th style="text-align:center">Position</th>
-                    <th style="text-align:center">Constructor</th>
-                    <th style="text-align:center">Wins</th>
-                    <th style="text-align:center">Points</th>
+                    <th class="align-center">Position</th>
+                    <th class="align-center">Constructor</th>
+                    <th class="align-center">Wins</th>
+                    <th class="align-center">Points</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var constructorStandings in constructorStandingsList.MRData.StandingsTable.StandingsLists.FirstOrDefault()?.ConstructorStandings ?? [])
                 {
                     <tr>
-                        <td style="text-align:center">@constructorStandings.PositionText</td>
-                        <td style="text-align:center"><MudLink Href=@($"constructors/{year}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
-                        <td style="text-align:center">@constructorStandings.Wins</td>
-                        <td style="text-align:center">@constructorStandings.Points</td>
+                        <td class="align-center">@constructorStandings.PositionText</td>
+                        <td class="align-center"><MudLink Href=@($"constructors/{Year}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
+                        <td class="align-center">@constructorStandings.Wins</td>
+                        <td class="align-center">@constructorStandings.Points</td>
                     </tr>
                 }
             </tbody>
-        </MudSimpleTable>
-    </div>
-}
+        }
+    </MudSimpleTable>
+</div>
 
 @code {
     private Response<StandingsTableMRData<ConstructorStandingsList>>? constructorStandingsList;
-    private int year;
 
     [Parameter]
     public int? Year { get; set; }
@@ -51,25 +50,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        year = Year ?? DateTime.Now.Year;
+        Year ??= DateTime.Now.Year;
         await GetDataAsync();
     }
 
     private async Task GetDataAsync()
     {
-        NavigationManager.NavigateTo($"constructors/{year}");
-        constructorStandingsList = await F1Service.GetConstructorsAsync(year);
+        NavigationManager.NavigateTo($"constructors/{Year}");
+        constructorStandingsList = await F1Service.GetConstructorsAsync(Year!.Value);
     }
 
     private async Task BackAsync()
     {
-        year--;
+        Year--;
         await GetDataAsync();
     }
 
     private async Task ForwardAsync()
     {
-        year++;
+        Year++;
         await GetDataAsync();
     }
 }

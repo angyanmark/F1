@@ -4,48 +4,49 @@
 
 <PageTitle>@(driver is null ? "Driver" : $"{driver.GivenName} {driver.FamilyName} {Year}")</PageTitle>
 
-@if (driverResultsRaceTable is not null)
-{
-    @if (driver is not null)
-    {
-        <MudText Typo="Typo.h4" Class="pb-2">@driver.GivenName @driver.FamilyName @Year</MudText>
-    }
+<MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudText Typo="Typo.h4">@(driver is null ? string.Empty : $"{driver.GivenName} {driver.FamilyName} {Year}")</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+</MudStack>
 
-    <div class="relative flex-1">
-        <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+<div class="relative flex-1">
+    <MudSimpleTable Class="fill-parent" Dense Hover FixedHeader>
+        @if (driverResultsRaceTable is not null)
+        {
             <thead>
                 <tr>
-                    <th style="text-align:center">Round</th>
-                    <th style="text-align:center">Race</th>
-                    <th style="text-align:center">Date</th>
-                    <th style="text-align:center">Constructor</th>
-                    <th style="text-align:center">Position</th>
-                    <th style="text-align:center">Points</th>
+                    <th class="align-center">Round</th>
+                    <th class="align-center">Race</th>
+                    <th class="align-center">Date</th>
+                    <th class="align-center">Constructor</th>
+                    <th class="align-center">Position</th>
+                    <th class="align-center">Points</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var race in driverResultsRaceTable.MRData.RaceTable.Races ?? [])
                 {
                     <tr>
-                        <td style="text-align:center">@race.Round</td>
-                        <td style="text-align:center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
-                        <td style="text-align:center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
-                        <td style="text-align:center"><MudLink Href=@($"constructors/{Year}/{race.Results.FirstOrDefault()?.Constructor?.ConstructorId}")>@race.Results.FirstOrDefault()?.Constructor?.Name</MudLink></td>
-                        <td style="text-align:center" title="@race.Results.FirstOrDefault()?.Status">@race.Results.FirstOrDefault()?.PositionText</td>
-                        <td style="text-align:center">@race.Results.FirstOrDefault()?.Points</td>
+                        <td class="align-center">@race.Round</td>
+                        <td class="align-center"><MudLink Href=@($"races/{Year}/{race.Round}")>@race.RaceName</MudLink></td>
+                        <td class="align-center">@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
+                        <td class="align-center"><MudLink Href=@($"constructors/{Year}/{race.Results.FirstOrDefault()?.Constructor?.ConstructorId}")>@race.Results.FirstOrDefault()?.Constructor?.Name</MudLink></td>
+                        <td class="align-center" title="@race.Results.FirstOrDefault()?.Status">@race.Results.FirstOrDefault()?.PositionText</td>
+                        <td class="align-center">@race.Results.FirstOrDefault()?.Points</td>
                     </tr>
                 }
             </tbody>
-        </MudSimpleTable>
-    </div>
-}
+        }
+    </MudSimpleTable>
+</div>
 
 @code {
     private Response<RaceTableMRData<DriverResultsRaceTable>>? driverResultsRaceTable;
     private F1.Services.Driver? driver;
 
     [Parameter]
-    public required int Year { get; init; }
+    public required int Year { get; set; }
 
     [Parameter]
     public required string DriverId { get; init; }
@@ -53,9 +54,28 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private NavigationManager NavigationManager { get; init; } = default!;
+
+    protected override async Task OnInitializedAsync() =>
+        await GetDataAsync();
+
+    private async Task GetDataAsync()
     {
+        NavigationManager.NavigateTo($"drivers/{Year}/{DriverId}");
         driverResultsRaceTable = await F1Service.GetDriverAsync(Year, DriverId);
         driver = driverResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
+    }
+
+    private async Task BackAsync()
+    {
+        Year--;
+        await GetDataAsync();
+    }
+
+    private async Task ForwardAsync()
+    {
+        Year++;
+        await GetDataAsync();
     }
 }
