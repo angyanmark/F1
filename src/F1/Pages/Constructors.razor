@@ -4,9 +4,9 @@
 <PageTitle>Constructors @Year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"constructors/{Year - 1}")" />
     <MudText Typo="Typo.h4">Constructors @Year</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Href="@($"constructors/{Year + 1}")" />
 </MudStack>
 
 <div class="relative flex-1">
@@ -45,30 +45,9 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; init; } = default!;
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         Year ??= DateTime.Now.Year;
-        await GetDataAsync();
-    }
-
-    private async Task GetDataAsync()
-    {
-        NavigationManager.NavigateTo($"constructors/{Year}");
         constructorStandingsList = await F1Service.GetConstructorsAsync(Year!.Value);
-    }
-
-    private async Task BackAsync()
-    {
-        Year--;
-        await GetDataAsync();
-    }
-
-    private async Task ForwardAsync()
-    {
-        Year++;
-        await GetDataAsync();
     }
 }

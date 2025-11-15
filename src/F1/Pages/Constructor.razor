@@ -5,9 +5,9 @@
 <PageTitle>@(constructor is null ? "Constructor" : $"{constructor.Name} {Year}")</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"constructors/{Year - 1}/{ConstructorId}")" />
     <MudText Typo="Typo.h4">@(constructor is null ? string.Empty : $"{constructor.Name} {Year}")</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Href="@($"constructors/{Year + 1}/{ConstructorId}")" />
 </MudStack>
 
 <div class="relative flex-1">
@@ -62,7 +62,7 @@
     private F1.Services.Constructor? constructor;
 
     [Parameter]
-    public required int Year { get; set; }
+    public required int Year { get; init; }
 
     [Parameter]
     public required string ConstructorId { get; init; }
@@ -70,28 +70,9 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; init; } = default!;
-
-    protected override async Task OnInitializedAsync() =>
-        await GetDataAsync();
-
-    private async Task GetDataAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        NavigationManager.NavigateTo($"constructors/{Year}/{ConstructorId}");
         constructorResultsRaceTable = await F1Service.GetConstructorAsync(Year, ConstructorId);
         constructor = constructorResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
-    }
-
-    private async Task BackAsync()
-    {
-        Year--;
-        await GetDataAsync();
-    }
-
-    private async Task ForwardAsync()
-    {
-        Year++;
-        await GetDataAsync();
     }
 }

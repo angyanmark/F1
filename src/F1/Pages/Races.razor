@@ -5,9 +5,9 @@
 <PageTitle>Races @Year</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"races/{Year - 1}")" />
     <MudText Typo="Typo.h4">Races @Year</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Href="@($"races/{Year + 1}")" />
 </MudStack>
 
 <div class="relative flex-1">
@@ -72,38 +72,15 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; init; } = default!;
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         Year ??= DateTime.Now.Year;
-        await GetDataAsync();
-    }
-
-    private async Task GetDataAsync()
-    {
-        NavigationManager.NavigateTo($"races/{Year}");
         raceTable = await F1Service.GetRacesAsync(Year!.Value);
-        nextRound = raceTable.MRData.RaceTable.Races
-            .FirstOrDefault(IsFutureRound)
-            ?.Round;
+        nextRound = raceTable.MRData.RaceTable.Races.FirstOrDefault(IsFutureRound)?.Round;
     }
 
     private bool IsFutureRound(RaceBase race) =>
         race.TimeOnly.HasValue
             ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Utc) > DateTime.UtcNow
             : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Utc) > DateTime.UtcNow;
-
-    private async Task BackAsync()
-    {
-        Year--;
-        await GetDataAsync();
-    }
-
-    private async Task ForwardAsync()
-    {
-        Year++;
-        await GetDataAsync();
-    }
 }

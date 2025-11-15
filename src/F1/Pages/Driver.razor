@@ -5,9 +5,9 @@
 <PageTitle>@(driver is null ? "Driver" : $"{driver.GivenName} {driver.FamilyName} {Year}")</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"drivers/{Year - 1}/{DriverId}")" />
     <MudText Typo="Typo.h4">@(driver is null ? string.Empty : $"{driver.GivenName} {driver.FamilyName} {Year}")</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Href="@($"drivers/{Year + 1}/{DriverId}")" />
 </MudStack>
 
 <div class="relative flex-1">
@@ -46,7 +46,7 @@
     private F1.Services.Driver? driver;
 
     [Parameter]
-    public required int Year { get; set; }
+    public required int Year { get; init; }
 
     [Parameter]
     public required string DriverId { get; init; }
@@ -54,28 +54,9 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; init; } = default!;
-
-    protected override async Task OnInitializedAsync() =>
-        await GetDataAsync();
-
-    private async Task GetDataAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        NavigationManager.NavigateTo($"drivers/{Year}/{DriverId}");
         driverResultsRaceTable = await F1Service.GetDriverAsync(Year, DriverId);
         driver = driverResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
-    }
-
-    private async Task BackAsync()
-    {
-        Year--;
-        await GetDataAsync();
-    }
-
-    private async Task ForwardAsync()
-    {
-        Year++;
-        await GetDataAsync();
     }
 }

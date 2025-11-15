@@ -5,9 +5,9 @@
 <PageTitle>@(raceResult is null ? "Race" : $"{raceResult.RaceName} {Year}")</PageTitle>
 
 <MudStack Justify="Justify.SpaceBetween" Class="pb-2" Row>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="BackAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"races/{Year - 1}/{Round}")" />
     <MudText Typo="Typo.h4">@(raceResult is null ? string.Empty : $"{raceResult.RaceName} {Year}")</MudText>
-    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" OnClick="ForwardAsync" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Href="@($"races/{Year + 1}/{Round}")" />
 </MudStack>
 
 <div class="relative flex-1">
@@ -45,7 +45,7 @@
     private int? laps;
 
     [Parameter]
-    public required int Year { get; set; }
+    public required int Year { get; init; }
 
     [Parameter]
     public required int Round { get; init; }
@@ -53,29 +53,10 @@
     [Inject]
     private F1Service F1Service { get; init; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; init; } = default!;
-
-    protected override async Task OnInitializedAsync() =>
-        await GetDataAsync();
-
-    private async Task GetDataAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        NavigationManager.NavigateTo($"races/{Year}/{Round}");
         raceResultsRaceTable = await F1Service.GetRaceAsync(Year, Round);
         raceResult = raceResultsRaceTable.MRData.RaceTable.Races.FirstOrDefault();
         laps = raceResult?.Results.FirstOrDefault()?.Laps;
-    }
-
-    private async Task BackAsync()
-    {
-        Year--;
-        await GetDataAsync();
-    }
-
-    private async Task ForwardAsync()
-    {
-        Year++;
-        await GetDataAsync();
     }
 }
