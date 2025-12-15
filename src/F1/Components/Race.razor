@@ -1,0 +1,38 @@
+﻿@using F1.Services
+
+<thead>
+    <tr>
+        <th>Position</th>
+        <th>Name</th>
+        <th>Constructor</th>
+        <th>Time</th>
+        <th>Points</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var result in raceResult?.Results ?? [])
+    {
+        <tr>
+            <td title="@result.Status">@result.PositionText</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"drivers/{RaceResultsRaceTable.Season}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{RaceResultsRaceTable.Season}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
+            <td>@(result.Time is null ? result.Status : result.Laps == laps ? result.Time?.Time : laps - result.Laps is 1 ? "+1 Lap" : $"+{laps - result.Laps} Laps")</td>
+            <td>@result.Points</td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    private RaceResult? raceResult;
+    private int? laps;
+
+    [Parameter]
+    [EditorRequired]
+    public required RaceResultsRaceTable RaceResultsRaceTable { get; init; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        raceResult = RaceResultsRaceTable.Races.FirstOrDefault();
+        laps = raceResult?.Results.FirstOrDefault()?.Laps;
+    }
+}

@@ -1,13 +1,14 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager NavigationManager
 
 <Router AppAssembly="typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <RouteView RouteData="routeData" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
     <NotFound>
         @{
-            NavigationManager.NavigateTo("races");
+            NavigationManager.NavigateTo($"races/{DateTime.Now.Year}");
         }
     </NotFound>
 </Router>

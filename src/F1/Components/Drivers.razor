@@ -1,0 +1,34 @@
+﻿@using F1.Services
+
+<thead>
+    <tr>
+        <th>Position</th>
+        <th>Driver</th>
+        <th>Code</th>
+        <th>Nationality</th>
+        <th>Constructor</th>
+        <th>Wins</th>
+        <th>Points</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var driverStanding in DriverStandingsList.DriverStandings)
+    {
+        var constructor = driverStanding.Constructors.LastOrDefault();
+        <tr>
+            <td>@driverStanding.PositionText</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"drivers/{DriverStandingsList.Season}/{driverStanding.Driver.DriverId}")>@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</MudLink></td>
+            <td>@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
+            <td>@driverStanding.Driver.Nationality</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{DriverStandingsList.Season}/{constructor?.ConstructorId}")>@constructor?.Name</MudLink></td>
+            <td>@driverStanding.Wins</td>
+            <td>@driverStanding.Points</td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required DriverStandingsList DriverStandingsList { get; init; }
+}

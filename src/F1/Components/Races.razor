@@ -1,0 +1,64 @@
+﻿@using F1.Helpers
+@using F1.Services
+
+<thead>
+    <tr>
+        <th>Round</th>
+        <th>Date</th>
+        <th>Race</th>
+        <th>Location</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var race in RaceTable.Races)
+    {
+        <tr style="@(race.Round == nextRound ? "color: var(--mud-palette-dark); background-color: var(--mud-palette-primary);" : null)">
+            <td>@race.Round</td>
+            <td>
+                <MudTooltip>
+                    <ChildContent>
+                        @TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)
+                    </ChildContent>
+                    <TooltipContent>
+                        <MudStack Spacing="0">
+                            @foreach (var session in race.Sessions.Where(s => s.Value is not null).OrderBy(s => s.Value!.Date).ThenBy(s => s.Value!.TimeOnly))
+                            {
+                                <MudStack Justify="Justify.SpaceBetween" Row>
+                                    <MudText Typo="Typo.body2">@session.Key</MudText>
+                                    <MudText Typo="Typo.body2">@TimeHelper.ToDisplayDate(session.Value!.Date, session.Value!.TimeOnly)</MudText>
+                                </MudStack>
+                            }
+                        </MudStack>
+                    </TooltipContent>
+                </MudTooltip>
+            </td>
+            <td>
+                @if (IsFutureRace(race))
+                {
+                    @race.RaceName
+                }
+                else
+                {
+                    <MudLink Typo="Typo.inherit" Href=@($"races/{RaceTable.Season}/{race.Round}")>@race.RaceName</MudLink>
+                }
+            </td>
+            <td>@race.Circuit.CircuitName, @race.Circuit.Location.Locality, @race.Circuit.Location.Country</td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    private int? nextRound;
+
+    [Parameter]
+    [EditorRequired]
+    public required RaceTable RaceTable { get; init; }
+
+    protected override async Task OnParametersSetAsync() =>
+        nextRound = RaceTable.Races.FirstOrDefault(IsFutureRace)?.Round;
+
+    private bool IsFutureRace(RaceBase race) =>
+        race.TimeOnly.HasValue
+            ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Utc) > DateTime.UtcNow
+            : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Utc) > DateTime.UtcNow;
+}

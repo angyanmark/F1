@@ -1,0 +1,33 @@
+﻿@using F1.Helpers
+@using F1.Services
+
+<thead>
+    <tr>
+        <th>Round</th>
+        <th>Race</th>
+        <th>Date</th>
+        <th>Constructor</th>
+        <th>Position</th>
+        <th>Points</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var race in DriverResultsRaceTable.Races)
+    {
+        var result = race.Results.FirstOrDefault();
+        <tr>
+            <td>@race.Round</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"races/{DriverResultsRaceTable.Season}/{race.Round}")>@race.RaceName</MudLink></td>
+            <td>@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{DriverResultsRaceTable.Season}/{result?.Constructor?.ConstructorId}")>@result?.Constructor?.Name</MudLink></td>
+            <td title="@result?.Status">@result?.PositionText</td>
+            <td>@result?.Points</td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required DriverResultsRaceTable DriverResultsRaceTable { get; init; }
+}

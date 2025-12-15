@@ -1,0 +1,47 @@
+﻿@using F1.Helpers
+@using F1.Services
+
+<thead>
+    <tr>
+        <th>Round</th>
+        <th>Race</th>
+        <th>Date</th>
+        <th>Driver</th>
+        <th>Position</th>
+        <th>Points</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var race in ConstructorResultsRaceTable.Races)
+    {
+        <tr>
+            <td>@race.Round</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"races/{ConstructorResultsRaceTable.Season}/{race.Round}")>@race.RaceName</MudLink></td>
+            <td>@TimeHelper.ToDisplayDate(race.Date, race.TimeOnly)</td>
+            <td>
+                @foreach (var result in race.Results)
+                {
+                    <MudLink Typo="Typo.inherit" Href=@($"drivers/{ConstructorResultsRaceTable.Season}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink><br/>
+                }
+            </td>
+            <td>
+                @foreach (var result in race.Results)
+                {
+                    <div title="@result.Status">@result.PositionText</div>
+                }
+            </td>
+            <td>
+                @foreach (var result in race.Results)
+                {
+                    @result.Points<br/>
+                }
+            </td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required ConstructorResultsRaceTable ConstructorResultsRaceTable { get; init; }
+}

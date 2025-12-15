@@ -1,0 +1,27 @@
+﻿@using F1.Services
+
+<thead>
+    <tr>
+        <th>Position</th>
+        <th>Constructor</th>
+        <th>Wins</th>
+        <th>Points</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var constructorStandings in ConstructorStandingsList.ConstructorStandings)
+    {
+        <tr>
+            <td>@constructorStandings.PositionText</td>
+            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{ConstructorStandingsList.Season}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
+            <td>@constructorStandings.Wins</td>
+            <td>@constructorStandings.Points</td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required ConstructorStandingsList ConstructorStandingsList { get; init; }
+}

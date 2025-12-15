@@ -1,0 +1,202 @@
+﻿@page "/{Category}/{Year:int}/{CategoryId?}"
+@using System.Reflection
+@using System.Runtime.InteropServices
+@using F1.Components
+@using F1.Services
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inject IWebAssemblyHostEnvironment HostEnvironment
+
+<MudThemeProvider Theme="theme" IsDarkMode="true" />
+<MudPopoverProvider />
+
+<PageTitle>@title</PageTitle>
+
+<MudLayout Class="d-flex flex-column">
+    <MudAppBar Elevation="0" Dense>
+        <MudText Typo="Typo.h6">F1</MudText>
+        <MudStack Spacing="2" Class="ml-6" Row>
+            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"races/{DateTime.Now.Year}")" Class="@GetActiveClass("races")">Races</MudButton>
+            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"drivers/{DateTime.Now.Year}")" Class="@GetActiveClass("drivers")">Drivers</MudButton>
+            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"constructors/{DateTime.Now.Year}")" Class="@GetActiveClass("constructors")">Constructors</MudButton> 
+        </MudStack>
+        <MudStack Spacing="2" Class="ml-6" Row>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.ArrowBack" Href="@($"{Category}/{Year - 1}/{CategoryId}")" />
+            <MudText Typo="Typo.h6">@title</MudText>
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.ArrowForward" Href="@($"{Category}/{Year + 1}/{CategoryId}")" />
+        </MudStack>
+        <MudSpacer />
+        <MudTooltip>
+            <ChildContent>
+                <MudIconButton Size="Size.Small" Color="Color.Inherit" Href="https://github.com/angyanmark/F1/" Target="_blank" Icon="@Icons.Custom.Brands.GitHub" Class="ml-6" />
+            </ChildContent>
+            <TooltipContent>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.inherit">@HostEnvironment.Environment</MudText>
+                    <MudText Typo="Typo.inherit">@($"v{Assembly.GetExecutingAssembly().GetName().Version?.Major}")</MudText>
+                    <MudText Typo="Typo.inherit">@RuntimeInformation.FrameworkDescription</MudText>
+                </MudStack>
+            </TooltipContent>
+        </MudTooltip>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pa-0">
+            <MudSimpleTable Style="height: calc(100dvh - (var(--mud-appbar-height) * 3 / 4));" Elevation="0" Square Dense Hover FixedHeader>
+                @if (raceTable is not null)
+                {
+                    <Races RaceTable="raceTable" />
+                }
+                else if (raceResultsRaceTable is not null)
+                {
+                    <Race RaceResultsRaceTable="raceResultsRaceTable" />
+                }
+                else if (driverStandingsList is not null)
+                {
+                    <Drivers DriverStandingsList="driverStandingsList" />
+                }
+                else if (driverResultsRaceTable is not null)
+                {
+                    <Driver DriverResultsRaceTable="driverResultsRaceTable" />
+                }
+                else if (constructorStandingsList is not null)
+                {
+                    <Constructors ConstructorStandingsList="constructorStandingsList" />
+                }
+                else if (constructorResultsRaceTable is not null)
+                {
+                    <Constructor ConstructorResultsRaceTable="constructorResultsRaceTable" />
+                }
+            </MudSimpleTable>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private string? title;
+    private RaceTable? raceTable;
+    private RaceResultsRaceTable? raceResultsRaceTable;
+    private DriverStandingsList? driverStandingsList;
+    private DriverResultsRaceTable? driverResultsRaceTable;
+    private ConstructorStandingsList? constructorStandingsList;
+    private ConstructorResultsRaceTable? constructorResultsRaceTable;
+
+    [Parameter]
+    public required string Category { get; init; }
+
+    [Parameter]
+    public required int Year { get; init; }
+
+    [Parameter]
+    public required string? CategoryId { get; init; }
+
+    [Inject]
+    private F1Service F1Service { get; init; } = default!;
+
+    protected override async Task OnParametersSetAsync() =>
+        title = (Category, CategoryId) switch
+        {
+            ("races", null) => await GetRacesAsync(),
+            ("races", _) => await GetRaceAsync(int.Parse(CategoryId)),
+            ("drivers", null) => await GetDriversAsync(),
+            ("drivers", _) => await GetDriverAsync(CategoryId),
+            ("constructors", null) => await GetConstructorsAsync(),
+            ("constructors", _) => await GetConstructorAsync(CategoryId),
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+
+    private void ResetResponses()
+    {
+        raceTable = null;
+        raceResultsRaceTable = null;
+        driverStandingsList = null;
+        driverResultsRaceTable = null;
+        constructorStandingsList = null;
+        constructorResultsRaceTable = null;
+    }
+
+    private async Task<string> GetRacesAsync()
+    {
+        var response = await F1Service.GetRacesAsync(Year);
+        ResetResponses();
+        raceTable = response.MRData.RaceTable;
+        return $"Races {Year}";
+    }
+
+    private async Task<string> GetRaceAsync(int round)
+    {
+        var response = await F1Service.GetRaceAsync(Year, round);
+        ResetResponses();
+        raceResultsRaceTable = response.MRData.RaceTable;
+        var raceResult = raceResultsRaceTable.Races.FirstOrDefault();
+        return raceResult is null ? $"Race {Year}" : $"{raceResult.RaceName} {Year}";
+    }
+
+    private async Task<string> GetDriversAsync()
+    {
+        var response = await F1Service.GetDriversAsync(Year);
+        ResetResponses();
+        driverStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
+        return $"Drivers {Year}";
+    }
+
+    private async Task<string> GetDriverAsync(string driverId)
+    {
+        var response = await F1Service.GetDriverAsync(Year, driverId);
+        ResetResponses();
+        driverResultsRaceTable = response.MRData.RaceTable;
+        var driver = driverResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
+        return driver is null ? $"Driver {Year}" : $"{driver.GivenName} {driver.FamilyName} {Year}";
+    }
+
+    private async Task<string> GetConstructorsAsync()
+    {
+        var response = await F1Service.GetConstructorsAsync(Year);
+        ResetResponses();
+        constructorStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
+        return $"Constructors {Year}";
+    }
+
+    private async Task<string> GetConstructorAsync(string constructorId)
+    {
+        var response = await F1Service.GetConstructorAsync(Year, constructorId);
+        ResetResponses();
+        constructorResultsRaceTable = response.MRData.RaceTable;
+        var constructor = constructorResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
+        return constructor is null ? $"Constructor {Year}" : $"{constructor.Name} {Year}";
+    }
+
+    private MudTheme theme = new()
+    {
+        PaletteDark = new()
+        {
+            Primary = "#7e6fff",
+            Surface = "#1e1e2d",
+            Background = "#1a1a27",
+            BackgroundGray = "#151521",
+            AppbarText = "#92929f",
+            AppbarBackground = "rgba(26,26,39,0.8)",
+            DrawerBackground = "#1a1a27",
+            ActionDefault = "#74718e",
+            ActionDisabled = "#9999994d",
+            ActionDisabledBackground = "#605f6d4d",
+            TextPrimary = "#b2b0bf",
+            TextSecondary = "#92929f",
+            TextDisabled = "#ffffff33",
+            DrawerIcon = "#92929f",
+            DrawerText = "#92929f",
+            GrayLight = "#2a2833",
+            GrayLighter = "#1e1e2d",
+            Info = "#4a86ff",
+            Success = "#3dcb6c",
+            Warning = "#ffb545",
+            Error = "#ff3f5f",
+            LinesDefault = "#33323e",
+            TableLines = "#33323e",
+            Divider = "#292838",
+            OverlayLight = "#1e1e2d80",
+        },
+    };
+
+    private string? GetActiveClass(string page) =>
+        string.Equals(page, Category) ? "mud-chip-text mud-chip-color-primary" : null;
+}
