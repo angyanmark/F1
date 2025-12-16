@@ -3,6 +3,7 @@
 @using System.Runtime.InteropServices
 @using F1.Components
 @using F1.Services
+@using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inject IWebAssemblyHostEnvironment HostEnvironment
@@ -13,22 +14,18 @@
 <PageTitle>@title</PageTitle>
 
 <MudLayout Class="d-flex flex-column">
-    <MudAppBar Elevation="0" Dense>
-        <MudText Typo="Typo.h6">F1</MudText>
-        <MudStack Spacing="2" Class="ml-6" Row>
-            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"races/{DateTime.Now.Year}")" Class="@GetActiveClass("races")">Races</MudButton>
-            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"drivers/{DateTime.Now.Year}")" Class="@GetActiveClass("drivers")">Drivers</MudButton>
-            <MudButton Size="Size.Small" Color="Color.Inherit" Href="@($"constructors/{DateTime.Now.Year}")" Class="@GetActiveClass("constructors")">Constructors</MudButton> 
-        </MudStack>
-        <MudStack Spacing="2" Class="ml-6" Row>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.ArrowBack" Href="@($"{Category}/{Year - 1}/{CategoryId}")" />
-            <MudText Typo="Typo.h6">@title</MudText>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.ArrowForward" Href="@($"{Category}/{Year + 1}/{CategoryId}")" />
+    <MudAppBar Elevation="0">
+        <MudIconButton Color="Color.Inherit" Icon="@Icons.Material.Rounded.Menu" Edge="Edge.Start" OnClick="DrawerToggle" />
+        <MudSpacer />
+        <MudStack Spacing="2" Row>
+            <MudIconButton Icon="@Icons.Material.Rounded.ArrowBackIos" Href="@($"{Category}/{Year - 1}/{CategoryId}")" />
+            <MudText Typo="Typo.h5" Class="align-content-center">@title</MudText>
+            <MudIconButton Icon="@Icons.Material.Rounded.ArrowForwardIos" Href="@($"{Category}/{Year + 1}/{CategoryId}")" />
         </MudStack>
         <MudSpacer />
         <MudTooltip>
             <ChildContent>
-                <MudIconButton Size="Size.Small" Color="Color.Inherit" Href="https://github.com/angyanmark/F1/" Target="_blank" Icon="@Icons.Custom.Brands.GitHub" Class="ml-6" />
+                <MudIconButton Color="Color.Inherit" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.End" Href="https://github.com/angyanmark/F1/" Target="_blank" />
             </ChildContent>
             <TooltipContent>
                 <MudStack Spacing="0">
@@ -39,9 +36,19 @@
             </TooltipContent>
         </MudTooltip>
     </MudAppBar>
+    <MudDrawer Variant="DrawerVariant.Temporary" @bind-Open="drawerOpen">
+        <MudDrawerHeader Class="justify-center">
+            <MudText Typo="Typo.h5">F1</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu Color="Color.Primary">
+            <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"races/{Year}")" Icon="@Icons.Material.Rounded.CalendarMonth">Races</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"drivers/{Year}")" Icon="@Icons.Material.Rounded.Person">Drivers</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Href="@($"constructors/{Year}")" Icon="@Icons.Material.Rounded.People">Constructors</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="pa-0">
-            <MudSimpleTable Style="height: calc(100dvh - (var(--mud-appbar-height) * 3 / 4));" Elevation="0" Square Dense Hover FixedHeader>
+            <MudSimpleTable Style="height: calc(100dvh - var(--mud-appbar-height));" Elevation="0" Square Dense Hover FixedHeader>
                 @if (raceTable is not null)
                 {
                     <Races RaceTable="raceTable" />
@@ -71,8 +78,10 @@
     </MudMainContent>
 </MudLayout>
 
-@code {
-    private string? title;
+@code
+{
+    private bool drawerOpen;
+    private string title = "F1";
     private RaceTable? raceTable;
     private RaceResultsRaceTable? raceResultsRaceTable;
     private DriverStandingsList? driverStandingsList;
@@ -103,16 +112,6 @@
             ("constructors", _) => await GetConstructorAsync(CategoryId),
             _ => throw new ArgumentOutOfRangeException(),
         };
-
-    private void ResetResponses()
-    {
-        raceTable = null;
-        raceResultsRaceTable = null;
-        driverStandingsList = null;
-        driverResultsRaceTable = null;
-        constructorStandingsList = null;
-        constructorResultsRaceTable = null;
-    }
 
     private async Task<string> GetRacesAsync()
     {
@@ -165,6 +164,18 @@
         return constructor is null ? $"Constructor {Year}" : $"{constructor.Name} {Year}";
     }
 
+    private void ResetResponses()
+    {
+        raceTable = null;
+        raceResultsRaceTable = null;
+        driverStandingsList = null;
+        driverResultsRaceTable = null;
+        constructorStandingsList = null;
+        constructorResultsRaceTable = null;
+    }
+
+    private void DrawerToggle() => drawerOpen = !drawerOpen;
+
     private MudTheme theme = new()
     {
         PaletteDark = new()
@@ -196,7 +207,4 @@
             OverlayLight = "#1e1e2d80",
         },
     };
-
-    private string? GetActiveClass(string page) =>
-        string.Equals(page, Category) ? "mud-chip-text mud-chip-color-primary" : null;
 }

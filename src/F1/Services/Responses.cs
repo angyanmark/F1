@@ -16,49 +16,23 @@ public sealed record Response<TMRData>(
     where TMRData : MRData;
 
 public abstract record MRData(
-    string Xmlns,
-    string Series,
-    Uri Url,
-    int Limit,
-    int Offset,
-    int Total);
+    string Series);
 
 public sealed record RaceTableMRData<TRaceTable>(
-    string Xmlns,
     string Series,
-    Uri Url,
-    int Limit,
-    int Offset,
-    int Total,
     TRaceTable RaceTable)
         : MRData(
-            Xmlns,
-            Series,
-            Url,
-            Limit,
-            Offset,
-            Total);
+            Series);
 
 public sealed record StandingsTableMRData<TStandingsList>(
-    string Xmlns,
     string Series,
-    Uri Url,
-    int Limit,
-    int Offset,
-    int Total,
     StandingsTable<TStandingsList> StandingsTable)
         : MRData(
-            Xmlns,
-            Series,
-            Url,
-            Limit,
-            Offset,
-            Total)
+            Series)
             where TStandingsList : StandingsList;
 
 public sealed record StandingsTable<TStandingsList>(
     int Season,
-    int? Round,
     TStandingsList[] StandingsLists)
     where TStandingsList : StandingsList;
 
@@ -117,17 +91,13 @@ public sealed record Driver(
     string DriverId,
     int? PermanentNumber,
     string? Code,
-    Uri? Url,
     string GivenName,
     string FamilyName,
-    DateOnly? DateOfBirth,
     string? Nationality);
 
 public sealed record Constructor(
     string? ConstructorId,
-    Uri? Url,
-    string Name,
-    string? Nationality);
+    string Name);
 
 public sealed record RaceTable(
     int Season,
@@ -151,7 +121,6 @@ public sealed record ConstructorResultsRaceTable(
 public abstract record RaceBase(
     int Season,
     int Round,
-    Uri? Url,
     string RaceName,
     Circuit Circuit,
     DateOnly Date,
@@ -163,7 +132,6 @@ public abstract record RaceBase(
 public sealed record Race(
     int Season,
     int Round,
-    Uri? Url,
     string RaceName,
     Circuit Circuit,
     DateOnly Date,
@@ -178,7 +146,6 @@ public sealed record Race(
         : RaceBase(
             Season,
             Round,
-            Url,
             RaceName,
             Circuit,
             Date,
@@ -200,7 +167,6 @@ public sealed record Race(
 public sealed record RaceResult(
     int Season,
     int Round,
-    Uri? Url,
     string RaceName,
     Circuit Circuit,
     DateOnly Date,
@@ -209,48 +175,29 @@ public sealed record RaceResult(
         : RaceBase(
             Season,
             Round,
-            Url,
             RaceName,
             Circuit,
             Date,
             Time);
 
 public sealed record Result(
-    int Number,
     int Position,
     string PositionText,
     double Points,
     Driver Driver,
     Constructor? Constructor,
-    int? Grid,
     int? Laps,
     string? Status,
-    TimeObj? Time,
-    FastestLap? FastestLap);
+    TimeObj? Time);
 
 public sealed record TimeObj(
-    int? Millis,
     string Time);
 
-public sealed record FastestLap(
-    int Rank,
-    int Lap,
-    TimeObj Time,
-    AverageSpeed AverageSpeed);
-
-public sealed record AverageSpeed(
-    string Units,
-    double Speed);
-
 public sealed record Circuit(
-    string CircuitId,
-    Uri Url,
     string CircuitName,
     Location Location);
 
 public sealed record Location(
-    double Lat,
-    double Long,
     string Locality,
     string Country);
 
