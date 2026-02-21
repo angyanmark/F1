@@ -13,7 +13,7 @@
     {
         <tr>
             <td>@constructorStandings.PositionText</td>
-            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{ConstructorStandingsList.Season}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
+            <td><MudLink Href=@($"constructors/{ConstructorStandingsList.Season}/{constructorStandings.Constructor.ConstructorId}")>@constructorStandings.Constructor.Name</MudLink></td>
             <td>@constructorStandings.Wins</td>
             <td>@constructorStandings.Points</td>
         </tr>

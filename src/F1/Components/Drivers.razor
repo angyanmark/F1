@@ -17,10 +17,10 @@
         var constructor = driverStanding.Constructors.LastOrDefault();
         <tr>
             <td>@driverStanding.PositionText</td>
-            <td><MudLink Typo="Typo.inherit" Href=@($"drivers/{DriverStandingsList.Season}/{driverStanding.Driver.DriverId}")>@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</MudLink></td>
+            <td><MudLink Href=@($"drivers/{DriverStandingsList.Season}/{driverStanding.Driver.DriverId}")>@driverStanding.Driver.GivenName @driverStanding.Driver.FamilyName</MudLink></td>
             <td>@driverStanding.Driver.Code @driverStanding.Driver.PermanentNumber</td>
             <td>@driverStanding.Driver.Nationality</td>
-            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{DriverStandingsList.Season}/{constructor?.ConstructorId}")>@constructor?.Name</MudLink></td>
+            <td><MudLink Href=@($"constructors/{DriverStandingsList.Season}/{constructor?.ConstructorId}")>@constructor?.Name</MudLink></td>
             <td>@driverStanding.Wins</td>
             <td>@driverStanding.Points</td>
         </tr>

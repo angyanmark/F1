@@ -39,7 +39,7 @@
                 }
                 else
                 {
-                    <MudLink Typo="Typo.inherit" Href=@($"races/{RaceTable.Season}/{race.Round}")>@race.RaceName</MudLink>
+                    <MudLink Href=@($"races/{RaceTable.Season}/{race.Round}")>@race.RaceName</MudLink>
                 }
             </td>
             <td>@race.Circuit.CircuitName, @race.Circuit.Location.Locality, @race.Circuit.Location.Country</td>

@@ -14,8 +14,8 @@
     {
         <tr>
             <td title="@result.Status">@result.PositionText</td>
-            <td><MudLink Typo="Typo.inherit" Href=@($"drivers/{RaceResultsRaceTable.Season}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
-            <td><MudLink Typo="Typo.inherit" Href=@($"constructors/{RaceResultsRaceTable.Season}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
+            <td><MudLink Href=@($"drivers/{RaceResultsRaceTable.Season}/{result.Driver.DriverId}")>@result.Driver.GivenName @result.Driver.FamilyName</MudLink></td>
+            <td><MudLink Href=@($"constructors/{RaceResultsRaceTable.Season}/{result.Constructor?.ConstructorId}")>@result.Constructor?.Name</MudLink></td>
             <td>@(result.Time is null ? result.Status : result.Laps == laps ? result.Time?.Time : laps - result.Laps is 1 ? "+1 Lap" : $"+{laps - result.Laps} Laps")</td>
             <td>@result.Points</td>
         </tr>
