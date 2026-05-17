@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 
-namespace F1.Services;
+namespace F1.Client;
 
-public sealed class F1Service(HttpClient _httpClient)
+public sealed class F1HttpClient(HttpClient _httpClient)
 {
     private const int PageSize = 100;
 

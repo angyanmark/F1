@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 
-namespace F1.Services;
+namespace F1.Client;
 
-[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString)]
+[JsonSourceGenerationOptions(
+    PropertyNameCaseInsensitive = true,
+    NumberHandling = JsonNumberHandling.AllowReadingFromString)]
 [JsonSerializable(typeof(Response<RaceTableMRData<RaceTable>>))]
 [JsonSerializable(typeof(Response<RaceTableMRData<RaceResultsRaceTable>>))]
 [JsonSerializable(typeof(Response<RaceTableMRData<DriverResultsRaceTable>>))]

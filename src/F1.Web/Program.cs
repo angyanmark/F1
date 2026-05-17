@@ -1,5 +1,5 @@
-using F1;
-using F1.Services;
+using F1.Client;
+using F1.Web;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -12,6 +12,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
     .AddMudServices()
-    .AddHttpClient<F1Service>(httpClient => httpClient.BaseAddress = new("https://api.jolpi.ca/"));
+    .AddHttpClient<F1HttpClient>(httpClient => httpClient.BaseAddress = new("https://api.jolpi.ca/"));
 
 await builder.Build().RunAsync();

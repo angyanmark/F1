@@ -1,8 +1,8 @@
 @page "/{Category}/{Year:int}/{CategoryId?}"
 @using System.Reflection
 @using System.Runtime.InteropServices
-@using F1.Components
-@using F1.Services
+@using F1.Client
+@using F1.Web.Components
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
@@ -99,7 +99,7 @@
     public required string? CategoryId { get; init; }
 
     [Inject]
-    private F1Service F1Service { get; init; } = default!;
+    private F1HttpClient F1HttpClient { get; init; } = default!;
 
     protected override async Task OnParametersSetAsync() =>
         title = (Category, CategoryId) switch
@@ -115,7 +115,7 @@
 
     private async Task<string> GetRacesAsync()
     {
-        var response = await F1Service.GetRacesAsync(Year);
+        var response = await F1HttpClient.GetRacesAsync(Year);
         ResetResponses();
         raceTable = response.MRData.RaceTable;
         return $"Races {Year}";
@@ -123,7 +123,7 @@
 
     private async Task<string> GetRaceAsync(int round)
     {
-        var response = await F1Service.GetRaceAsync(Year, round);
+        var response = await F1HttpClient.GetRaceAsync(Year, round);
         ResetResponses();
         raceResultsRaceTable = response.MRData.RaceTable;
         var raceResult = raceResultsRaceTable.Races.FirstOrDefault();
@@ -132,7 +132,7 @@
 
     private async Task<string> GetDriversAsync()
     {
-        var response = await F1Service.GetDriversAsync(Year);
+        var response = await F1HttpClient.GetDriversAsync(Year);
         ResetResponses();
         driverStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
         return $"Drivers {Year}";
@@ -140,7 +140,7 @@
 
     private async Task<string> GetDriverAsync(string driverId)
     {
-        var response = await F1Service.GetDriverAsync(Year, driverId);
+        var response = await F1HttpClient.GetDriverAsync(Year, driverId);
         ResetResponses();
         driverResultsRaceTable = response.MRData.RaceTable;
         var driver = driverResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
@@ -149,7 +149,7 @@
 
     private async Task<string> GetConstructorsAsync()
     {
-        var response = await F1Service.GetConstructorsAsync(Year);
+        var response = await F1HttpClient.GetConstructorsAsync(Year);
         ResetResponses();
         constructorStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
         return $"Constructors {Year}";
@@ -157,7 +157,7 @@
 
     private async Task<string> GetConstructorAsync(string constructorId)
     {
-        var response = await F1Service.GetConstructorAsync(Year, constructorId);
+        var response = await F1HttpClient.GetConstructorAsync(Year, constructorId);
         ResetResponses();
         constructorResultsRaceTable = response.MRData.RaceTable;
         var constructor = constructorResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;

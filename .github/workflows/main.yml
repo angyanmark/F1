@@ -21,11 +21,11 @@ jobs:
 
       # Install workloads
       - name: Install workloads
-        run: dotnet workload restore src/F1/F1.csproj
+        run: dotnet workload restore src/F1.Web/F1.Web.csproj
 
       # Publish the Blazor project to the release folder
       - name: Publish Blazor project
-        run: dotnet publish src/F1/F1.csproj -o release /p:Version=$(git rev-list --count HEAD)
+        run: dotnet publish src/F1.Web/F1.Web.csproj -o release /p:Version=$(git rev-list --count HEAD)
 
       # Change the base tag in index.html from '/' to '/F1/' to match GitHub Pages repository subdirectory
       - name: Change base tag in index.html from '/' to '/F1/'

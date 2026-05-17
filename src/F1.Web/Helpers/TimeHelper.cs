@@ -1,4 +1,4 @@
-namespace F1.Helpers;
+namespace F1.Web.Helpers;
 
 public static class TimeHelper
 {
