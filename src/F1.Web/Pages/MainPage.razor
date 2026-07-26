@@ -1,5 +1,4 @@
 @page "/{Category}/{Year:int}/{CategoryId?}"
-@using System.Reflection
 @using System.Runtime.InteropServices
 @using F1.Client
 @using F1.Web.Components
@@ -30,7 +29,7 @@
             <TooltipContent>
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.inherit">@HostEnvironment.Environment</MudText>
-                    <MudText Typo="Typo.inherit">@($"v{Assembly.GetExecutingAssembly().GetName().Version?.Major}")</MudText>
+                    <MudText Typo="Typo.inherit">@($"v{AppInfo.AppVersionMajor}")</MudText>
                     <MudText Typo="Typo.inherit">@RuntimeInformation.FrameworkDescription</MudText>
                 </MudStack>
             </TooltipContent>
