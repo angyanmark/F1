@@ -17,6 +17,9 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6
 
+      - name: Install workloads
+        run: dotnet workload restore src/F1.Web/F1.Web.csproj
+
       - name: Publish Blazor project
         run: dotnet publish src/F1.Web/F1.Web.csproj --output release --property Version=$(git rev-list --count HEAD) -warnaserror
 
