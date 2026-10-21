@@ -55,7 +55,7 @@
     [EditorRequired]
     public required RaceTable RaceTable { get; init; }
 
-    protected override async Task OnParametersSetAsync() =>
+    protected override void OnParametersSet() =>
         nextRound = RaceTable.Races.FirstOrDefault(IsFutureRace)?.Round;
 
     private bool IsFutureRace(RaceBase race) =>

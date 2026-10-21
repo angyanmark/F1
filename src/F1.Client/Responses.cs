@@ -1,6 +1,15 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace F1.Client;
+
+internal static class F1TimeFormat
+{
+    private const string Utc = "HH:mm:ss'Z'";
+
+    public static TimeOnly Parse(string time) =>
+        TimeOnly.ParseExact(time, Utc, CultureInfo.InvariantCulture);
+}
 
 [JsonSourceGenerationOptions(
     PropertyNameCaseInsensitive = true,
@@ -128,7 +137,7 @@ public abstract record RaceBase(
     DateOnly Date,
     string? Time)
 {
-    public TimeOnly? TimeOnly => Time is null ? null : System.TimeOnly.Parse(Time.TrimEnd('Z'));
+    public TimeOnly? TimeOnly => Time is null ? null : F1TimeFormat.Parse(Time);
 }
 
 public sealed record Race(
@@ -153,17 +162,17 @@ public sealed record Race(
             Date,
             Time)
 {
-    public Dictionary<string, Session?> Sessions => new()
-    {
-        { "Practice 1", FirstPractice },
-        { "Practice 2", SecondPractice },
-        { "Practice 3", ThirdPractice },
-        { "Sprint Qualifying", SprintQualifying },
-        { "Sprint Shootout", SprintShootout },
-        { "Sprint", Sprint },
-        { "Qualifying", Qualifying },
-        { "Race", new(Date, Time) },
-    };
+    public IReadOnlyList<KeyValuePair<string, Session?>> Sessions { get; } =
+    [
+        new("Practice 1", FirstPractice),
+        new("Practice 2", SecondPractice),
+        new("Practice 3", ThirdPractice),
+        new("Sprint Qualifying", SprintQualifying),
+        new("Sprint Shootout", SprintShootout),
+        new("Sprint", Sprint),
+        new("Qualifying", Qualifying),
+        new("Race", new(Date, Time)),
+    ];
 }
 
 public sealed record RaceResult(
@@ -207,5 +216,5 @@ public sealed record Session(
     DateOnly Date,
     string? Time)
 {
-    public TimeOnly? TimeOnly => Time is null ? null : System.TimeOnly.Parse(Time.TrimEnd('Z'));
+    public TimeOnly? TimeOnly => Time is null ? null : F1TimeFormat.Parse(Time);
 }

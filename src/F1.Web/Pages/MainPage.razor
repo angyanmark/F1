@@ -100,7 +100,15 @@
     [Inject]
     private F1HttpClient F1HttpClient { get; init; } = default!;
 
-    protected override async Task OnParametersSetAsync() =>
+    protected override async Task OnParametersSetAsync()
+    {
+        raceTable = null;
+        raceResultsRaceTable = null;
+        driverStandingsList = null;
+        driverResultsRaceTable = null;
+        constructorStandingsList = null;
+        constructorResultsRaceTable = null;
+
         title = (Category, CategoryId) switch
         {
             ("races", null) => await GetRacesAsync(),
@@ -111,11 +119,11 @@
             ("constructors", _) => await GetConstructorAsync(CategoryId),
             _ => throw new ArgumentOutOfRangeException(),
         };
+    }
 
     private async Task<string> GetRacesAsync()
     {
         var response = await F1HttpClient.GetRacesAsync(Year);
-        ResetResponses();
         raceTable = response.MRData.RaceTable;
         return $"Races {Year}";
     }
@@ -123,7 +131,6 @@
     private async Task<string> GetRaceAsync(int round)
     {
         var response = await F1HttpClient.GetRaceAsync(Year, round);
-        ResetResponses();
         raceResultsRaceTable = response.MRData.RaceTable;
         var raceResult = raceResultsRaceTable.Races.FirstOrDefault();
         return raceResult is null ? $"Race {Year}" : $"{raceResult.RaceName} {Year}";
@@ -132,7 +139,6 @@
     private async Task<string> GetDriversAsync()
     {
         var response = await F1HttpClient.GetDriversAsync(Year);
-        ResetResponses();
         driverStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
         return $"Drivers {Year}";
     }
@@ -140,7 +146,6 @@
     private async Task<string> GetDriverAsync(string driverId)
     {
         var response = await F1HttpClient.GetDriverAsync(Year, driverId);
-        ResetResponses();
         driverResultsRaceTable = response.MRData.RaceTable;
         var driver = driverResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Driver;
         return driver is null ? $"Driver {Year}" : $"{driver.GivenName} {driver.FamilyName} {Year}";
@@ -149,7 +154,6 @@
     private async Task<string> GetConstructorsAsync()
     {
         var response = await F1HttpClient.GetConstructorsAsync(Year);
-        ResetResponses();
         constructorStandingsList = response.MRData.StandingsTable.StandingsLists.FirstOrDefault();
         return $"Constructors {Year}";
     }
@@ -157,20 +161,9 @@
     private async Task<string> GetConstructorAsync(string constructorId)
     {
         var response = await F1HttpClient.GetConstructorAsync(Year, constructorId);
-        ResetResponses();
         constructorResultsRaceTable = response.MRData.RaceTable;
         var constructor = constructorResultsRaceTable.Races.FirstOrDefault()?.Results.FirstOrDefault()?.Constructor;
         return constructor is null ? $"Constructor {Year}" : $"{constructor.Name} {Year}";
-    }
-
-    private void ResetResponses()
-    {
-        raceTable = null;
-        raceResultsRaceTable = null;
-        driverStandingsList = null;
-        driverResultsRaceTable = null;
-        constructorStandingsList = null;
-        constructorResultsRaceTable = null;
     }
 
     private void DrawerToggle() => drawerOpen = !drawerOpen;
