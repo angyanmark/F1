@@ -4,15 +4,14 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-slim
     environment: github-pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Checkout branch
         uses: actions/checkout@v7.0.1
