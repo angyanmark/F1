@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="F1.Client/F1.Client.csproj" />
-  <Project Path="F1.Web/F1.Web.csproj" />
+  <Project Path="Client/Client.csproj" />
+  <Project Path="Web/Web.csproj" />
 </Solution>

@@ -301,7 +301,7 @@
           "Microsoft.JSInterop": "10.0.13"
         }
       },
-      "f1.client": {
+      "F1.Client": {
         "type": "Project"
       }
     },
