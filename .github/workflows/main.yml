@@ -10,12 +10,12 @@ jobs:
     steps:
 
       - name: Checkout branch
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v6.0.0
 
       - name: Install workloads
         run: dotnet workload restore src/Web/Web.csproj
@@ -36,7 +36,7 @@ jobs:
         run: echo "* binary" > release/wwwroot/.gitattributes
 
       - name: Commit files to GitHub Pages branch
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages

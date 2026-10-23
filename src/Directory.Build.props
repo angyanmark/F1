@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ProjectPrefix>F1</ProjectPrefix>
-    <RootNamespace>$(ProjectPrefix).$(MSBuildProjectName)</RootNamespace>
-    <AssemblyName>$(ProjectPrefix).$(MSBuildProjectName)</AssemblyName>
+    <SolutionName>F1</SolutionName>
+    <RootNamespace>$(SolutionName).$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(SolutionName).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -1,4 +1,3 @@
-@using F1.Client
 @using F1.Web.Helpers
 
 <thead>
@@ -46,20 +45,3 @@
         </tr>
     }
 </tbody>
-
-@code
-{
-    private int? nextRound;
-
-    [Parameter]
-    [EditorRequired]
-    public required RaceTable RaceTable { get; init; }
-
-    protected override void OnParametersSet() =>
-        nextRound = RaceTable.Races.FirstOrDefault(IsFutureRace)?.Round;
-
-    private bool IsFutureRace(RaceBase race) =>
-        race.TimeOnly.HasValue
-            ? new DateTime(race.Date, race.TimeOnly.Value, DateTimeKind.Utc) > DateTime.UtcNow
-            : new DateTime(race.Date, TimeOnly.MaxValue, DateTimeKind.Utc) > DateTime.UtcNow;
-}
