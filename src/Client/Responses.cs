@@ -1,15 +1,6 @@
-using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace F1.Client;
-
-internal static class F1TimeFormat
-{
-    private const string Utc = "HH:mm:ss'Z'";
-
-    public static TimeOnly Parse(string time) =>
-        TimeOnly.ParseExact(time, Utc, CultureInfo.InvariantCulture);
-}
 
 [JsonSourceGenerationOptions(
     PropertyNameCaseInsensitive = true,
@@ -137,7 +128,7 @@ public abstract record RaceBase(
     DateOnly Date,
     string? Time)
 {
-    public TimeOnly? TimeOnly => Time is null ? null : F1TimeFormat.Parse(Time);
+    public TimeOnly? TimeOnly => Time is null ? null : F1TimeParser.Parse(Time);
 }
 
 public sealed record Race(
@@ -216,5 +207,5 @@ public sealed record Session(
     DateOnly Date,
     string? Time)
 {
-    public TimeOnly? TimeOnly => Time is null ? null : F1TimeFormat.Parse(Time);
+    public TimeOnly? TimeOnly => Time is null ? null : F1TimeParser.Parse(Time);
 }
