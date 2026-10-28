@@ -8,8 +8,7 @@ public sealed partial class Races
 {
     private int? nextRound;
 
-    [Parameter]
-    [EditorRequired]
+    [Parameter, EditorRequired]
     public required RaceTable RaceTable { get; init; }
 
     protected override void OnParametersSet() =>

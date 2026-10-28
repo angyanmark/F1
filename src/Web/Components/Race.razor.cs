@@ -9,8 +9,7 @@ public sealed partial class Race
     private RaceResult? raceResult;
     private int? laps;
 
-    [Parameter]
-    [EditorRequired]
+    [Parameter, EditorRequired]
     public required RaceResultsRaceTable RaceResultsRaceTable { get; init; }
 
     protected override void OnParametersSet()

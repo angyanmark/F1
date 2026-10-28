@@ -6,7 +6,6 @@ namespace F1.Web.Components;
 
 public sealed partial class Constructors
 {
-    [Parameter]
-    [EditorRequired]
+    [Parameter, EditorRequired]
     public required ConstructorStandingsList ConstructorStandingsList { get; init; }
 }

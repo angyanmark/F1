@@ -6,7 +6,6 @@ namespace F1.Web.Components;
 
 public sealed partial class Driver
 {
-    [Parameter]
-    [EditorRequired]
+    [Parameter, EditorRequired]
     public required DriverResultsRaceTable DriverResultsRaceTable { get; init; }
 }
