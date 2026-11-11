@@ -1,10 +1,7 @@
 @page "/{Category}/{Year:int}/{CategoryId?}"
-@using System.Runtime.InteropServices
 @using F1.Web.Components
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
-@inject IWebAssemblyHostEnvironment HostEnvironment
 
 <MudThemeProvider Theme="theme" IsDarkMode="true" />
 <MudPopoverProvider />
@@ -21,18 +18,7 @@
             <MudIconButton Icon="@Icons.Material.Rounded.ArrowForwardIos" Href="@($"{Category}/{Year + 1}/{CategoryId}")" />
         </MudStack>
         <MudSpacer />
-        <MudTooltip>
-            <ChildContent>
-                <MudIconButton Color="Color.Inherit" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.End" Href="https://github.com/angyanmark/F1/" Target="_blank" />
-            </ChildContent>
-            <TooltipContent>
-                <MudStack Spacing="0">
-                    <MudText Typo="Typo.inherit">@HostEnvironment.Environment</MudText>
-                    <MudText Typo="Typo.inherit">@($"v{AppInfo.AppVersionMajor}")</MudText>
-                    <MudText Typo="Typo.inherit">@RuntimeInformation.FrameworkDescription</MudText>
-                </MudStack>
-            </TooltipContent>
-        </MudTooltip>
+        <MudIconButton Color="Color.Inherit" Icon="@Icons.Custom.Brands.GitHub" Edge="Edge.End" Href="https://github.com/angyanmark/F1/" Target="_blank" />
     </MudAppBar>
     <MudDrawer Variant="DrawerVariant.Temporary" @bind-Open="drawerOpen">
         <MudDrawerHeader Class="justify-center">

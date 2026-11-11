@@ -1,9 +1,9 @@
-using System.Net.Http.Json;
-
 namespace F1.Client;
 
 public sealed class F1HttpClient(HttpClient _httpClient)
 {
+    public const string BaseAddress = "https://api.jolpi.ca/";
+
     private const int PageSize = 100;
 
     public async Task<Response<RaceTableMRData<RaceTable>>> GetRacesAsync(
